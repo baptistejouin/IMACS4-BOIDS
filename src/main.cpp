@@ -15,10 +15,22 @@ int main()
 
     // Declare your infinite update loop.
     ctx.update = [&]() {
-        ctx.background(p6::NamedColor::Blue);
+        ctx.background(p6::Color{.7f, .7f, .7f});
+
+        // Carré bordure
+        ctx.use_stroke    = true;
+        ctx.use_fill      = true;
+        ctx.stroke_weight = .005f;
+        ctx.fill          = {1.f, 1.f, 1.f};
+        ctx.square(p6::Center{0, 0}, p6::Radius{.8f});
+
+        // Cercle de la souris
+        ctx.use_fill   = true;
+        ctx.use_stroke = false;
+        ctx.fill       = {1.f, 1.f, 1.f};
         ctx.circle(
             p6::Center{ctx.mouse()},
-            p6::Radius{0.2f}
+            p6::Radius{0.05f}
         );
     };
 
