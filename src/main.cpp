@@ -24,14 +24,10 @@ int main()
         ctx.fill          = {1.f, 1.f, 1.f};
         ctx.square(p6::Center{0, 0}, p6::Radius{.8f});
 
-        // Cercle de la souris
-        ctx.use_fill   = true;
-        ctx.use_stroke = false;
-        ctx.fill       = {1.f, 1.f, 1.f};
-        ctx.circle(
-            p6::Center{ctx.mouse()},
-            p6::Radius{0.05f}
-        );
+        if (ctx.key_is_pressed(GLFW_KEY_ESCAPE))
+        {
+            ctx.stop();
+        }
     };
 
     // Should be done last. It starts the infinite loop.
