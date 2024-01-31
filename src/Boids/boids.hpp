@@ -2,14 +2,10 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include "Boid/boid.hpp"
+#include "glm/glm.hpp"
 
 namespace Project {
-
-struct Boid {
-    float     size;
-    glm::vec3 color;
-    glm::vec2 position;
-};
 
 class Boids {
 public:
@@ -22,6 +18,7 @@ public:
 
     // methods
     void update();
+    void draw(p6::Context& ctx) const;
     void addBoid();
     void removeBoid();
 };

@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include "Boids/boids.hpp"
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "Environment/environment.hpp"
 #include "doctest/doctest.h"
@@ -15,10 +16,13 @@ int main()
     ctx.maximize_window();
 
     Project::Environment environment;
+    Project::Boids       boids{1000};
 
     // Declare your infinite update loop.
     ctx.update = [&]() {
         environment.draw_environment(ctx);
+        boids.draw(ctx);
+        boids.update();
 
         if (ctx.key_is_pressed(GLFW_KEY_ESCAPE))
         {
