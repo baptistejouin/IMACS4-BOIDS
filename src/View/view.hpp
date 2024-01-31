@@ -6,8 +6,6 @@ class View {
 public:
     View();
     ~View();
-
-    void draw() const;
 };
 
 } // namespace Project

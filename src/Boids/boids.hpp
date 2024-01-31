@@ -22,7 +22,6 @@ public:
 
     // methods
     void update();
-    void draw() const;
     void addBoid();
     void removeBoid();
 };

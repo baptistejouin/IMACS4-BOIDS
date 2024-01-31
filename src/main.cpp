@@ -1,5 +1,6 @@
 #include <cstdlib>
 #define DOCTEST_CONFIG_IMPLEMENT
+#include "Environment/environment.hpp"
 #include "doctest/doctest.h"
 #include "p6/p6.h"
 
@@ -13,16 +14,11 @@ int main()
     auto ctx = p6::Context{{.title = "Simple-p6-Setup"}};
     ctx.maximize_window();
 
+    Project::Environment environment;
+
     // Declare your infinite update loop.
     ctx.update = [&]() {
-        ctx.background(p6::Color{.7f, .7f, .7f});
-
-        // Carré bordure
-        ctx.use_stroke    = true;
-        ctx.use_fill      = true;
-        ctx.stroke_weight = .005f;
-        ctx.fill          = {1.f, 1.f, 1.f};
-        ctx.square(p6::Center{0, 0}, p6::Radius{.8f});
+        environment.draw_environment(ctx);
 
         if (ctx.key_is_pressed(GLFW_KEY_ESCAPE))
         {
