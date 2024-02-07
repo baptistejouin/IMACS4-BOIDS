@@ -1,21 +1,28 @@
 #include "Environment/environment.hpp"
+#include <imgui.h>
 
 // constructor
-Environment::Environment()
-    : radius{0.8f}
-    , stroke_weight{0.005f}
-    , center{0.f, 0.f}
-    , background_color{0.7f, 0.7f, 0.7f}
-    , fill_color{1.f, 1.f, 1.f}
+Environment::Environment(const EnvironmentParams& params)
+    : p{params}
 {
 }
 
 void Environment::draw(p6::Context& ctx) const
 {
-    ctx.background(p6::Color{background_color});
+    ctx.background(p6::Color{p.background_color});
     ctx.use_stroke    = true;
     ctx.use_fill      = true;
-    ctx.stroke_weight = stroke_weight;
-    ctx.fill          = {fill_color};
-    ctx.square(p6::Center{center}, p6::Radius{radius});
+    ctx.stroke_weight = p.stroke_weight;
+    ctx.fill          = {p.fill_color};
+    ctx.square(p6::Center{p.center}, p6::Radius{p.radius});
+}
+
+void Environment::gui()
+{
+    ImGui::Begin("Environment");
+    ImGui::SliderFloat("Square size", &p.radius, 0.5f, 1.5f);
+    ImGui::ColorEdit3("Background color", (float*)&p.background_color);
+    ImGui::ColorEdit3("Fill color", (float*)&p.fill_color);
+    ImGui::End();
+    // ImGui::ShowDemoWindow();
 }

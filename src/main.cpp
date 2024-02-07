@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include "Boids/boids.hpp"
-#define DOCTEST_CONFIG_IMPLEMENT
 #include "Environment/environment.hpp"
+#define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest/doctest.h"
 #include "p6/p6.h"
 
@@ -28,6 +28,11 @@ int main()
         {
             ctx.stop();
         }
+    };
+
+    // Declare your GUI.
+    ctx.imgui = [&]() {
+        environment.gui();
     };
 
     // Should be done last. It starts the infinite loop.
