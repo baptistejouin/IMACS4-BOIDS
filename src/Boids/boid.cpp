@@ -1,4 +1,4 @@
-#include "Boid/boid.hpp"
+#include "boid.hpp"
 
 glm::vec2 get_random_velocity()
 {
@@ -19,7 +19,7 @@ Boid::Boid()
     , velocity(glm::vec2{get_random_velocity()})
 {}
 
-void Boid::update(float delta_time)
+void Boid::update(float delta_time, BoidsParams const& params)
 {
     position += velocity * delta_time;
 }
