@@ -1,32 +1,22 @@
 #include "Boids/boids.hpp"
 
 // constructor
-Project::Boids::Boids(int nbBoids)
-{
-    for (int i = 0; i < nbBoids; i++)
-    {
-        Boid boid;
-
-        boids.push_back(boid);
-    }
-}
-
-// destructor
-Project::Boids::~Boids()
+Boids::Boids(int nbBoids)
+    : boids(nbBoids)
 {
 }
 
-void Project::Boids::update()
+void Boids::update(float delta_time)
 {
     for (auto& boid : boids)
     {
-        boid.update();
+        boid.update(delta_time);
     }
 }
 
-void Project::Boids::draw(p6::Context& ctx) const
+void Boids::draw(p6::Context& ctx) const
 {
-    for (auto& boid : boids)
+    for (auto const& boid : boids)
     {
         boid.draw(ctx);
     }

@@ -1,7 +1,7 @@
 #include "Environment/environment.hpp"
 
 // constructor
-Project::Environment::Environment()
+Environment::Environment()
     : radius{0.8f}
     , stroke_weight{0.005f}
     , center{0.f, 0.f}
@@ -10,12 +10,7 @@ Project::Environment::Environment()
 {
 }
 
-// destructor
-Project::Environment::~Environment()
-{
-}
-
-void Project::Environment::draw_environment(p6::Context& ctx) const
+void Environment::draw(p6::Context& ctx) const
 {
     ctx.background(p6::Color{background_color});
     ctx.use_stroke    = true;

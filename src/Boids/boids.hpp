@@ -5,21 +5,16 @@
 #include "Boid/boid.hpp"
 #include "glm/glm.hpp"
 
-namespace Project {
-
 class Boids {
 public:
-    std::vector<Boid> boids;
-
     Boids(int nbBoids);
 
-    // destructor
-    ~Boids();
-
     // methods
-    void update();
+    void update(float delta_time);
     void draw(p6::Context& ctx) const;
     void addBoid();
     void removeBoid();
+
+private:
+    std::vector<Boid> boids;
 };
-} // namespace Project

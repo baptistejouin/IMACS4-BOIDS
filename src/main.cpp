@@ -12,17 +12,17 @@ int main()
         return EXIT_FAILURE;
 
     // Actual application code
-    auto ctx = p6::Context{{.title = "Simple-p6-Setup"}};
+    auto ctx = p6::Context{{.title = "Boids 2D"}};
     ctx.maximize_window();
 
-    Project::Environment environment;
-    Project::Boids       boids{1000};
+    Environment environment;
+    Boids       boids{1000};
 
     // Declare your infinite update loop.
     ctx.update = [&]() {
-        environment.draw_environment(ctx);
+        environment.draw(ctx);
         boids.draw(ctx);
-        boids.update();
+        boids.update(ctx.delta_time());
 
         if (ctx.key_is_pressed(GLFW_KEY_ESCAPE))
         {
@@ -32,4 +32,6 @@ int main()
 
     // Should be done last. It starts the infinite loop.
     ctx.start();
+
+    return EXIT_SUCCESS;
 }
