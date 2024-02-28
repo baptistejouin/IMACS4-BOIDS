@@ -29,3 +29,18 @@ void Boid::draw(p6::Context& ctx) const
     ctx.fill = color;
     ctx.circle(p6::Center(position), p6::Radius(0.01f));
 }
+
+glm::vec2 Boid::getPosition() const
+{
+    return position;
+}
+
+glm::vec2 Boid::getVelocity() const
+{
+    return velocity;
+}
+
+void Boid::setVelocity(glm::vec2 newVelocity)
+{
+    velocity = newVelocity;
+}
