@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include "Boids/boids.hpp"
 #include "Environment/environment.hpp"
+#include "View/view.hpp"
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest/doctest.h"
 #include "p6/p6.h"
@@ -11,31 +12,16 @@ int main()
     if (doctest::Context{}.run() != 0)
         return EXIT_FAILURE;
 
-    // Actual application code
     auto ctx = p6::Context{{.title = "Boids 2D"}};
-    ctx.maximize_window();
 
-    Environment environment;
-    Boids       boids{1000};
+    View view;
 
-    // Declare your infinite update loop.
+    view.init(ctx);
+
     ctx.update = [&]() {
-        environment.draw(ctx);
-        boids.draw(ctx);
-        boids.update(ctx.delta_time());
-
-        if (ctx.key_is_pressed(GLFW_KEY_ESCAPE))
-        {
-            ctx.stop();
-        }
+        view.update(ctx);
     };
 
-    // Declare your GUI.
-    ctx.imgui = [&]() {
-        environment.gui();
-    };
-
-    // Should be done last. It starts the infinite loop.
     ctx.start();
 
     return EXIT_SUCCESS;
