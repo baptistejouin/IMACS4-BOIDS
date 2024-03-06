@@ -7,7 +7,7 @@
 
 class Boid {
 public:
-    Boid(p6::Color color, glm::vec2 position, glm::vec2 velocity);
+    Boid(p6::Color color, glm::vec2 position, glm::vec2 velocity, float size);
     Boid();
 
     void update(float delta_time, BoidsParams const& params);
@@ -21,4 +21,5 @@ private:
     p6::Color color;
     glm::vec2 position;
     glm::vec2 velocity;
+    float     size;
 };
