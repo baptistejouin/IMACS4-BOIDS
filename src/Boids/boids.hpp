@@ -14,6 +14,8 @@ public:
     void draw(p6::Context& ctx) const;
     void addBoid();
     void removeBoid();
+    void reset();
+    void gui();
 
 private:
     std::vector<Boid> boids;

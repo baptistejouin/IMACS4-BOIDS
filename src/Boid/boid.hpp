@@ -11,6 +11,8 @@ public:
     void update(float delta_time);
     void draw(p6::Context& ctx) const;
 
+    void set_position(glm::vec2 position) { this->position = position; }
+
 private:
     p6::Color color;
     glm::vec2 position;

@@ -12,6 +12,7 @@ void View::init(p6::Context& ctx)
 
     ctx.imgui = [&]() {
         environment.gui();
+        boids.gui();
     };
 }
 
