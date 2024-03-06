@@ -2,12 +2,12 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include "Boid/boid.hpp"
-#include "glm/glm.hpp"
+#include "Boids/boid.hpp"
+#include "boidsParams.hpp"
 
 class Boids {
 public:
-    Boids(int nbBoids);
+    Boids(int nbBoids = 250);
 
     // methods
     void update(float delta_time);
@@ -16,6 +16,8 @@ public:
     void removeBoid();
     void reset();
     void gui();
+
+    BoidsParams params;
 
 private:
     std::vector<Boid> boids;
