@@ -21,8 +21,8 @@ void Environment::gui()
 {
     ImGui::Begin("Environment");
     ImGui::SliderFloat("Square size", &p.radius, 0.5f, 1.5f);
-    ImGui::ColorEdit3("Background color", (float*)&p.background_color);
-    ImGui::ColorEdit3("Fill color", (float*)&p.fill_color);
+    ImGui::ColorEdit3("Background color", reinterpret_cast<float*>(&p.background_color));
+    ImGui::ColorEdit3("Fill color", reinterpret_cast<float*>(&p.fill_color));
     ImGui::End();
     // ImGui::ShowDemoWindow();
 }
