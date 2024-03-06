@@ -2,8 +2,8 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include "Boid/boid.hpp"
-#include "glm/glm.hpp"
+#include "Boids/boid.hpp"
+#include "boidsParams.hpp"
 
 class Boids {
 public:
@@ -14,6 +14,8 @@ public:
     void draw(p6::Context& ctx) const;
     void addBoid();
     void removeBoid();
+
+    BoidsParams params;
 
 private:
     std::vector<Boid> boids;
