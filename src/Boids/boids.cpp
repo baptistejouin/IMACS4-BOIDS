@@ -4,7 +4,7 @@
 // constructor
 Boids::Boids(int nbBoids)
     : boids(nbBoids)
-    , params{.turnFactor = 0.2f, .visualRange = .3f, .protectedRange = .1f, .centeringFactor = 0.005f, .avoidFactor = 0.05f, .matchingFactor = 0.05f, .maxSpeed = .4f, .minSpeed = .1}
+    , params{.turnFactor = 0.11f, .visualRange = .2f, .protectedRange = .06f, .centeringFactor = 0.005f, .avoidFactor = 0.5f, .matchingFactor = 0.5f, .maxSpeed = .3f, .minSpeed = .1}
 {
 }
 
@@ -63,6 +63,24 @@ void Boids::update(float delta_time)
 
         // Add avoidance force to the boid's velocity
         boid.setVelocity(boid.getVelocity() + closeD * params.avoidFactor);
+
+        // If the boid is near an edge, make it turn by turnFactor
+        if (boid.getPosition().x < -.8) // Square radius
+        {
+            boid.setVelocity(boid.getVelocity() + glm::vec2(params.turnFactor, 0));
+        }
+        if (boid.getPosition().x > .8)
+        {
+            boid.setVelocity(boid.getVelocity() + glm::vec2(-params.turnFactor, 0));
+        }
+        if (boid.getPosition().y < -.8)
+        {
+            boid.setVelocity(boid.getVelocity() + glm::vec2(0, params.turnFactor));
+        }
+        if (boid.getPosition().y > .8)
+        {
+            boid.setVelocity(boid.getVelocity() + glm::vec2(0, -params.turnFactor));
+        }
 
         float speed = glm::length(boid.getVelocity());
 
