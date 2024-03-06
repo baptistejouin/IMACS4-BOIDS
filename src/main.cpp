@@ -16,7 +16,7 @@ int main()
     ctx.maximize_window();
 
     Environment environment;
-    Boids       boids{1000};
+    Boids       boids{250};
 
     // Declare your infinite update loop.
     ctx.update = [&]() {
