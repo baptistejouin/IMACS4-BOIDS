@@ -14,5 +14,5 @@ public:
 private:
     void        check_events(p6::Context& ctx);
     Environment environment;
-    Boids       boids{1000};
+    Boids       boids{250};
 };
