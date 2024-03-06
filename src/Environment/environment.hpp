@@ -1,5 +1,6 @@
 #pragma once
 
+#include <imgui.h>
 #include "glm/glm.hpp"
 #include "p6/p6.h"
 

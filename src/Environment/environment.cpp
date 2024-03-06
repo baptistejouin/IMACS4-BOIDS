@@ -1,5 +1,4 @@
 #include "Environment/environment.hpp"
-#include <imgui.h>
 
 // constructor
 Environment::Environment(const EnvironmentParams& params)

@@ -7,13 +7,15 @@
 
 class Boids {
 public:
-    Boids(int nbBoids);
+    Boids(int nbBoids = 250);
 
     // methods
     void update(float delta_time);
     void draw(p6::Context& ctx) const;
     void addBoid();
     void removeBoid();
+    void reset();
+    void gui();
 
     BoidsParams params;
 

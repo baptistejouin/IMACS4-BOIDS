@@ -106,3 +106,22 @@ void Boids::draw(p6::Context& ctx) const
         boid.draw(ctx);
     }
 }
+
+void Boids::reset()
+{
+    for (auto& boid : boids)
+    {
+        boid.set_position({0.f, 0.f});
+    }
+}
+
+void Boids::gui()
+{
+    ImGui::Begin("Boids");
+    ImGui::Text("Number of boids: %d", boids.size());
+    if (ImGui::Button("Reset boids"))
+    {
+        reset();
+    }
+    ImGui::End();
+}

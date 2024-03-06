@@ -3,7 +3,7 @@
 View::View()
 {
     Environment environment;
-    Boids       boids{1000};
+    Boids       boids;
 }
 
 void View::init(p6::Context& ctx)
@@ -12,6 +12,7 @@ void View::init(p6::Context& ctx)
 
     ctx.imgui = [&]() {
         environment.gui();
+        boids.gui();
     };
 }
 
