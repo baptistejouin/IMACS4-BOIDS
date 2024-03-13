@@ -35,3 +35,6 @@ build
 
 # Folder config
 .vscode
+
+#imgui
+imgui.ini

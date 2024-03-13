@@ -17,8 +17,7 @@ public:
     void reset();
     void gui();
 
-    BoidsParams params;
-
 private:
     std::vector<Boid> boids;
+    BoidsParams       params;
 };

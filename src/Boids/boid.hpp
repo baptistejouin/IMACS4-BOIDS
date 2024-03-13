@@ -16,7 +16,8 @@ public:
     glm::vec2 getPosition() const;
     glm::vec2 getVelocity() const;
     void      setVelocity(glm::vec2 newVelocity);
-    void set_position(glm::vec2 position) { this->position = position; }
+    void      set_position(glm::vec2 position) { this->position = position; }
+    void      set_color(p6::Color color) { this->color = color; }
 
 private:
     p6::Color color;

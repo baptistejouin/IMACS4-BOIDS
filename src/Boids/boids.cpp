@@ -4,7 +4,6 @@
 // constructor
 Boids::Boids(int nbBoids)
     : boids(nbBoids)
-    , params{.turnFactor = 0.11f, .visualRange = .2f, .protectedRange = .06f, .centeringFactor = 0.005f, .avoidFactor = 0.5f, .matchingFactor = 0.5f, .maxSpeed = .3f, .minSpeed = .1}
 {
 }
 
@@ -123,5 +122,13 @@ void Boids::gui()
     {
         reset();
     }
+    ImGui::SliderFloat("Turn factor", &params.turnFactor, .001f, .5f);
+    ImGui::SliderFloat("Visual range", &params.visualRange, .001f, .5f);
+    ImGui::SliderFloat("Protected range", &params.protectedRange, .001f, .5f);
+    ImGui::SliderFloat("Centering factor", &params.centeringFactor, .001f, .5f);
+    ImGui::SliderFloat("Avoid factor", &params.avoidFactor, .001f, 1.f);
+    ImGui::SliderFloat("Matching factor", &params.matchingFactor, .001f, 1.f);
+    ImGui::SliderFloat("Max speed", &params.maxSpeed, .001f, 1.f);
+    ImGui::SliderFloat("Min speed", &params.minSpeed, .001f, 1.f);
     ImGui::End();
 }
