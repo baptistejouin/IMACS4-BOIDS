@@ -34,18 +34,11 @@ void Boids::update(float delta_time)
                         closeD += d / distance * (params.protectedRange - distance);
                     }
                     // If the other boid is within the visual range
-                    if (distance < params.visualRange)
+                    else if (distance < params.visualRange)
                     {
                         // Add the position and velocity to the average
                         posAvg += otherBoid.getPosition();
                         velAvg += otherBoid.getVelocity();
-
-                        // If the other boid is within the protected range
-                        if (distance < params.protectedRange)
-                        {
-                            // Move away from the other boid
-                            closeD += d;
-                        }
 
                         // Increment the number of neighboring boids
                         neighboringBoids++;
@@ -54,18 +47,26 @@ void Boids::update(float delta_time)
             }
         }
 
+        glm::vec2 centeringForce = {0, 0};
+        glm::vec2 matchingForce  = {0, 0};
+        glm::vec2 avoidanceForce = {0, 0};
+
         if (neighboringBoids > 0)
         {
             // Divide accumulator variables by the number of neighboring boids
             posAvg /= neighboringBoids;
             velAvg /= neighboringBoids;
 
-            // Add centering/matching forces to the boid's velocity
-            boid.setVelocity(boid.getVelocity() + (posAvg - boid.getPosition()) * params.centeringFactor + (velAvg - boid.getVelocity()) * params.matchingFactor);
-        }
+            // Calcul de la différence entre la position moyenne des voisins et la position actuelle du boid
+            centeringForce = (posAvg - boid.getPosition()) * params.centeringFactor;
 
+            // Calcul de la différence entre la vitesse moyenne des voisins et la vitesse actuelle du boid
+            matchingForce = (velAvg - boid.getVelocity()) * params.matchingFactor;
+        }
         // Add avoidance force to the boid's velocity
-        boid.setVelocity(boid.getVelocity() + closeD * params.avoidFactor);
+        avoidanceForce = closeD * params.avoidFactor;
+
+        boid.setVelocity(boid.getVelocity() + avoidanceForce + centeringForce + matchingForce);
 
         // If the boid is near an edge, make it turn by turnFactor
         if (boid.getPosition().x < -.8) // Square radius
