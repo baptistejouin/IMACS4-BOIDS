@@ -29,6 +29,10 @@ void Boids::update(float delta_time)
                 {
                     float distance = glm::length(d);
 
+                    if (distance < params.protectedRange)
+                    {
+                        closeD += d / distance * (params.protectedRange - distance);
+                    }
                     // If the other boid is within the visual range
                     if (distance < params.visualRange)
                     {
