@@ -39,6 +39,7 @@ void View::check_events(p6::Context& ctx)
 void View::update(p6::Context& ctx)
 {
     // 🚧 DEBUT refacto 🚧
+
     shader.use();
 
     glm::mat4 ProjMatrix = glm::perspective(
