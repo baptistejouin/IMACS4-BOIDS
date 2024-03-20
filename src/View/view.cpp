@@ -18,6 +18,23 @@ void View::init(p6::Context& ctx)
     // Bind the VBO
     vbo.bind();
 
+    static constexpr GLuint VERTEX_ATTR_POSITION = 0;
+    glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
+
+    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), reinterpret_cast<const GLvoid*>(offsetof(ShapeVertex, position)));
+
+    static constexpr GLuint VERTEX_ATTR_NORMAL = 1;
+    glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
+
+    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), reinterpret_cast<const GLvoid*>(offsetof(ShapeVertex, normal)));
+
+    static constexpr GLuint VERTEX_ATTR_TEXCOORDS = 2;
+    glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
+
+    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), reinterpret_cast<const GLvoid*>(offsetof(ShapeVertex, texCoords)));
+
+    vbo.unbind();
+
     glEnable(GL_DEPTH_TEST);
 
     // 🚧 FIN refacto 🚧
