@@ -40,6 +40,14 @@ void View::update(p6::Context& ctx)
 {
     // 🚧 DEBUT refacto 🚧
 
+    const std::vector<ShapeVertex> vertices = Geometry::sphere_vertices(1.f, 32, 16);
+
+    vbo.bind();
+
+    vbo.fill(vertices);
+
+    vbo.unbind();
+
     shader.use();
 
     glm::mat4 ProjMatrix = glm::perspective(
@@ -63,8 +71,6 @@ void View::update(p6::Context& ctx)
     glUniformMatrix4fv(uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
     vao.bind();
-
-    const std::vector<ShapeVertex> vertices = Geometry::sphere_vertices(1.f, 32, 16);
 
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 

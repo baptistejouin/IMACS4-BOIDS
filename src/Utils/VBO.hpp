@@ -1,5 +1,8 @@
+#pragma once
+
 #include <glm/glm.hpp>
 #include <glpp/glpp.hpp>
+#include "Utils/Geometry.hpp"
 
 class VBO {
 public:
@@ -36,6 +39,10 @@ public:
     void bind() const
     {
         glBindBuffer(GL_ARRAY_BUFFER, _id);
+    }
+    void fill(const std::vector<ShapeVertex>& vertices) const
+    {
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(ShapeVertex), vertices.data(), GL_STATIC_DRAW);
     }
     void unbind() const
     {
