@@ -17,6 +17,7 @@ void View::init(p6::Context& ctx)
 
     // Bind the VBO
     vbo.bind();
+    vao.bind();
 
     static constexpr GLuint VERTEX_ATTR_POSITION = 0;
     glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
@@ -34,6 +35,7 @@ void View::init(p6::Context& ctx)
     glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), reinterpret_cast<const GLvoid*>(offsetof(ShapeVertex, texCoords)));
 
     vbo.unbind();
+    vao.unbind();
 
     glEnable(GL_DEPTH_TEST);
 
@@ -88,6 +90,7 @@ void View::update(p6::Context& ctx)
     glUniformMatrix4fv(uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
     vao.bind();
+    // think about texture here (binding)
 
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
