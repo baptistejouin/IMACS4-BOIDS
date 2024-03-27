@@ -2,7 +2,7 @@
 
 glm::vec2 get_random_position()
 {
-    return glm::vec2{p6::random::number(-.8f, .8f), p6::random::number(-.8f, .8f)}; // Square radius
+    return glm::vec2{p6::random::number(-.8f, .8f), p6::random::number(-.8f, .8f)};
 }
 
 // constructor
@@ -21,25 +21,33 @@ Boid::Boid()
     , size(0.01f)
 {}
 
-void Boid::update(float delta_time, BoidsParams const& params)
+void Boid::update(float delta_time)
 {
     position += velocity * delta_time;
 }
 
-void Boid::draw(p6::Context& ctx) const
+void Boid::draw(const VAO& vao, const GLint& uMVPMatrixLocation, const GLint& uMVMatrixLocation, const GLint& uNormalMatrixLocation, glm::mat4& ProjMatrix, const std::vector<ShapeVertex>& vertices) const
 {
-    ctx.fill          = color;
-    ctx.stroke_weight = 0.0f;
+    // ctx.fill          = color;
+    // ctx.stroke_weight = 0.0f;
 
-    // calculate the angle of the velocity vector
-    float angle = std::atan2(velocity.y, velocity.x);
+    glm::mat4 MVMatrix = glm::translate(
+        glm::mat4(1.f),
+        glm::vec3(position.x, position.y, -20.f)
+    );
 
-    // draw the boid
-    p6::Point2D p1 = position + glm::vec2{std::cos(angle), std::sin(angle)} * size * 2.0f;
-    p6::Point2D p2 = position + glm::vec2{std::cos(angle + 2.0f), std::sin(angle + 2.0f)} * size;
-    p6::Point2D p3 = position + glm::vec2{std::cos(angle - 2.0f), std::sin(angle - 2.0f)} * size;
+    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
-    ctx.triangle(p1, p2, p3);
+    glUniformMatrix4fv(uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+    glUniformMatrix4fv(uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+    glUniformMatrix4fv(uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    vao.bind();
+    // think about texture here (binding)
+
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+    vao.unbind();
 }
 
 glm::vec2 Boid::getPosition() const

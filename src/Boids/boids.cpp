@@ -3,8 +3,40 @@
 
 // constructor
 Boids::Boids(int nbBoids)
-    : boids(nbBoids)
+    : boids(nbBoids), shader(p6::load_shader("shaders/3D.vs.glsl", "shaders/normals.fs.glsl")), uMVPMatrixLocation(glGetUniformLocation(shader.id(), "uMVPMatrix")), uMVMatrixLocation(glGetUniformLocation(shader.id(), "uMVMatrix")), uNormalMatrixLocation(glGetUniformLocation(shader.id(), "uNormalMatrix")), vertices(Geometry::sphere_vertices(1.f, 32, 16))
 {
+    VBO vbo{};
+    VAO vao{};
+
+    // 🚧 DEBUT refacto 🚧
+
+    // Bind the VBO
+    vbo.bind();
+    vao.bind();
+
+    static constexpr GLuint VERTEX_ATTR_POSITION = 0;
+    glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
+
+    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), reinterpret_cast<const GLvoid*>(offsetof(ShapeVertex, position)));
+
+    static constexpr GLuint VERTEX_ATTR_NORMAL = 1;
+    glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
+
+    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), reinterpret_cast<const GLvoid*>(offsetof(ShapeVertex, normal)));
+
+    static constexpr GLuint VERTEX_ATTR_TEXCOORDS = 2;
+    glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
+
+    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), reinterpret_cast<const GLvoid*>(offsetof(ShapeVertex, texCoords)));
+
+    vbo.fill(vertices);
+
+    vbo.unbind();
+    vao.unbind();
+
+    glEnable(GL_DEPTH_TEST);
+
+    // 🚧 FIN refacto 🚧
 }
 
 void Boids::update(float delta_time)
@@ -99,15 +131,26 @@ void Boids::update(float delta_time)
         }
 
         // Update the boid's position
-        boid.update(delta_time, params);
+        boid.update(delta_time);
     }
 }
 
 void Boids::draw(p6::Context& ctx) const
 {
+    shader.use();
+
+    glm::mat4 ProjMatrix = glm::perspective(
+        glm::radians(70.f),
+        ctx.aspect_ratio(),
+        0.1f,
+        100.f
+    );
+
+    // 🚧 FIN refacto 🚧
+
     for (auto const& boid : boids)
     {
-        boid.draw(ctx);
+        boid.draw(vao, uMVPMatrixLocation, uMVMatrixLocation, uNormalMatrixLocation, ProjMatrix, vertices);
     }
 }
 

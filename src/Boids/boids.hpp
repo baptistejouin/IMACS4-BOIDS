@@ -3,7 +3,14 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "Boids/boid.hpp"
+#include "Utils/Geometry.hpp"
+#include "Utils/IBO.hpp"
+#include "Utils/VAO.hpp"
+#include "Utils/VBO.hpp"
 #include "boidsParams.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/transform.hpp"
 
 class Boids {
 public:
@@ -18,6 +25,13 @@ public:
     void gui();
 
 private:
-    std::vector<Boid> boids;
-    BoidsParams       params;
+    std::vector<Boid>              boids;
+    BoidsParams                    params;
+    VBO                            vbo;
+    VAO                            vao;
+    const p6::Shader               shader;
+    const GLint                    uMVPMatrixLocation;
+    const GLint                    uMVMatrixLocation;
+    const GLint                    uNormalMatrixLocation;
+    const std::vector<ShapeVertex> vertices;
 };
