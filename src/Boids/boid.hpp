@@ -16,17 +16,17 @@ public:
     Boid();
 
     void update(float delta_time);
-    void draw(const VAO& vao, const GLint& uMVPMatrixLocation, const GLint& uMVMatrixLocation, const GLint& uNormalMatrixLocation, glm::mat4& ProjMatrix, const std::vector<ShapeVertex>& vertices, TrackballCamera& camera) const;
 
-    glm::vec3 getPosition() const;
-    glm::vec3 getVelocity() const;
-    void      setVelocity(glm::vec3 newVelocity);
-    void      set_position(glm::vec3 position) { this->position = position; }
-    void      set_color(p6::Color color) { this->color = color; }
+    glm::vec3 get_position() const;
+    glm::vec3 get_velocity() const;
+
+    void set_velocity(glm::vec3 newVelocity);
+    void set_position(glm::vec3 position) { _position = position; }
+    void set_color(p6::Color color) { _color = color; }
 
 private:
-    p6::Color color;
-    glm::vec3 position;
-    glm::vec3 velocity;
-    float     size;
+    p6::Color _color;
+    glm::vec3 _position;
+    glm::vec3 _velocity;
+    float     _size;
 };

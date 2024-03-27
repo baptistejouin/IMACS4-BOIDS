@@ -7,28 +7,28 @@ TrackballCamera::TrackballCamera() noexcept
 {
 }
 
-void TrackballCamera::moveFront(float delta)
+void TrackballCamera::move_front(float delta)
 {
     _distance += delta;
 }
 
-void TrackballCamera::rotateLeft(float degrees)
+void TrackballCamera::rotate_left(float degrees)
 {
     _angleY += degrees;
 }
 
-void TrackballCamera::rotateUp(float degrees)
+void TrackballCamera::rotate_up(float degrees)
 {
     _angleX += degrees;
 }
 
-void TrackballCamera::drag(float y, float x, float factor)
+void TrackballCamera::drag(float deltaY, float deltaX, float factor)
 {
-    _angleY += x * factor;
-    _angleX += y * factor;
+    _angleY += deltaX * factor;
+    _angleX += deltaY * factor;
 }
 
-glm::mat4 TrackballCamera::getViewMatrix() const
+glm::mat4 TrackballCamera::get_view_matrix() const
 {
     glm::mat4 view = glm::mat4(1.0f);
 

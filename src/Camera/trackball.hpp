@@ -6,11 +6,11 @@
 class TrackballCamera {
 public:
     TrackballCamera() noexcept;
-    void      moveFront(float delta);
-    void      rotateLeft(float degrees);
-    void      rotateUp(float degrees);
-    void      drag(float x, float y, float factor);
-    glm::mat4 getViewMatrix() const;
+    void      move_front(float delta);
+    void      rotate_left(float degrees);
+    void      rotate_up(float degrees);
+    void      drag(float deltaY, float deltaX, float factor);
+    glm::mat4 get_view_matrix() const;
 
 private:
     float _distance;

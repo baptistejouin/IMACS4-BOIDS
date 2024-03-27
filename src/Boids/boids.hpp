@@ -4,6 +4,7 @@
 #include <vector>
 #include "Boids/boid.hpp"
 #include "Camera/trackball.hpp"
+#include "Renderer/renderer.hpp"
 #include "Utils/Geometry.hpp"
 #include "Utils/IBO.hpp"
 #include "Utils/VAO.hpp"
@@ -17,22 +18,13 @@ class Boids {
 public:
     Boids(int nbBoids = 500);
 
-    // methods
     void update(float delta_time);
-    void draw(p6::Context& ctx, TrackballCamera& camera) const;
-    void addBoid();
-    void removeBoid();
     void reset();
     void gui();
 
+    std::vector<Boid> get_boids();
+
 private:
-    std::vector<Boid>              boids;
-    BoidsParams                    params;
-    VBO                            vbo;
-    VAO                            vao;
-    const p6::Shader               shader;
-    const GLint                    uMVPMatrixLocation;
-    const GLint                    uMVMatrixLocation;
-    const GLint                    uNormalMatrixLocation;
-    const std::vector<ShapeVertex> vertices;
+    std::vector<Boid> _boids;
+    BoidsParams       _params;
 };

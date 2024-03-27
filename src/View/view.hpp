@@ -3,6 +3,7 @@
 #include "Boids/boids.hpp"
 #include "Camera/trackball.hpp"
 #include "Environment/environment.hpp"
+#include "Renderer/renderer.hpp"
 #include "p6/p6.h"
 
 class View {
@@ -13,8 +14,9 @@ public:
     void update(p6::Context& ctx);
 
 private:
-    void            check_events(p6::Context& ctx);
-    Environment     environment;
-    Boids           boids;
-    TrackballCamera camera;
+    void            _check_events(p6::Context& ctx);
+    Environment     _environment;
+    Boids           _boids;
+    TrackballCamera _camera;
+    Renderer        _renderer;
 };

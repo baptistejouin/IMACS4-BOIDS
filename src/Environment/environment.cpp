@@ -1,6 +1,5 @@
 #include "Environment/environment.hpp"
 
-// constructor
 Environment::Environment(const EnvironmentParams& params)
     : p{params}
 {
