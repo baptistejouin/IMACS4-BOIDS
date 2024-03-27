@@ -14,7 +14,7 @@
 
 class Boids {
 public:
-    Boids(int nbBoids = 250);
+    Boids(int nbBoids = 20);
 
     // methods
     void update(float delta_time);

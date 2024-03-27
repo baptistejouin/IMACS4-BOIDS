@@ -28,9 +28,6 @@ void Boid::update(float delta_time)
 
 void Boid::draw(const VAO& vao, const GLint& uMVPMatrixLocation, const GLint& uMVMatrixLocation, const GLint& uNormalMatrixLocation, glm::mat4& ProjMatrix, const std::vector<ShapeVertex>& vertices) const
 {
-    // ctx.fill          = color;
-    // ctx.stroke_weight = 0.0f;
-
     glm::mat4 MVMatrix = glm::translate(
         glm::mat4(1.f),
         glm::vec3(position.x, position.y, -20.f)

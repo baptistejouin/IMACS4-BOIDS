@@ -3,14 +3,13 @@
 
 // constructor
 Boids::Boids(int nbBoids)
-    : boids(nbBoids), shader(p6::load_shader("shaders/3D.vs.glsl", "shaders/normals.fs.glsl")), uMVPMatrixLocation(glGetUniformLocation(shader.id(), "uMVPMatrix")), uMVMatrixLocation(glGetUniformLocation(shader.id(), "uMVMatrix")), uNormalMatrixLocation(glGetUniformLocation(shader.id(), "uNormalMatrix")), vertices(Geometry::sphere_vertices(1.f, 32, 16))
+    : boids(nbBoids)
+    , shader(p6::load_shader("shaders/3D.vs.glsl", "shaders/normals.fs.glsl"))
+    , uMVPMatrixLocation(glGetUniformLocation(shader.id(), "uMVPMatrix"))
+    , uMVMatrixLocation(glGetUniformLocation(shader.id(), "uMVMatrix"))
+    , uNormalMatrixLocation(glGetUniformLocation(shader.id(), "uNormalMatrix"))
+    , vertices(Geometry::sphere_vertices(1.f, 32, 16))
 {
-    VBO vbo{};
-    VAO vao{};
-
-    // 🚧 DEBUT refacto 🚧
-
-    // Bind the VBO
     vbo.bind();
     vao.bind();
 
@@ -33,10 +32,6 @@ Boids::Boids(int nbBoids)
 
     vbo.unbind();
     vao.unbind();
-
-    glEnable(GL_DEPTH_TEST);
-
-    // 🚧 FIN refacto 🚧
 }
 
 void Boids::update(float delta_time)
@@ -145,8 +140,6 @@ void Boids::draw(p6::Context& ctx) const
         0.1f,
         100.f
     );
-
-    // 🚧 FIN refacto 🚧
 
     for (auto const& boid : boids)
     {

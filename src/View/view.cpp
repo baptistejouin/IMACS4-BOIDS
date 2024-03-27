@@ -14,6 +14,8 @@ void View::init(p6::Context& ctx)
         environment.gui();
         boids.gui();
     };
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void View::check_events(p6::Context& ctx)
@@ -30,6 +32,6 @@ void View::update(p6::Context& ctx)
 
     // environment.draw(ctx);
     boids.draw(ctx);
-    // boids.update(ctx.delta_time());
+    boids.update(ctx.delta_time());
     check_events(ctx);
 }
