@@ -15,6 +15,10 @@ void View::init(p6::Context& ctx)
         }
     };
 
+    ctx.mouse_scrolled = [this](p6::MouseScroll const& scroll) {
+        this->camera.moveFront(scroll.dy / 50);
+    };
+
     glEnable(GL_DEPTH_TEST);
 }
 
