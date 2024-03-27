@@ -1,18 +1,18 @@
 #include "View/view.hpp"
 
-View::View()
-{
-    Environment environment;
-    Boids       boids;
-}
-
 void View::init(p6::Context& ctx)
 {
     ctx.maximize_window();
 
     ctx.imgui = [&]() {
-        environment.gui();
-        boids.gui();
+        this->environment.gui();
+        this->boids.gui();
+    };
+
+    ctx.mouse_dragged = [this](p6::MouseDrag const& drag) {
+        {
+            this->camera.drag(drag.delta.y, drag.delta.x, 50.f);
+        }
     };
 
     glEnable(GL_DEPTH_TEST);
@@ -30,8 +30,8 @@ void View::update(p6::Context& ctx)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // environment.draw(ctx);
-    boids.draw(ctx);
-    boids.update(ctx.delta_time());
-    check_events(ctx);
+    // this->environment.draw(ctx);
+    this->boids.draw(ctx, this->camera);
+    this->boids.update(ctx.delta_time());
+    this->check_events(ctx);
 }

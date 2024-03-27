@@ -26,17 +26,18 @@ void Boid::update(float delta_time)
     position += velocity * delta_time;
 }
 
-void Boid::draw(const VAO& vao, const GLint& uMVPMatrixLocation, const GLint& uMVMatrixLocation, const GLint& uNormalMatrixLocation, glm::mat4& ProjMatrix, const std::vector<ShapeVertex>& vertices) const
+void Boid::draw(const VAO& vao, const GLint& uMVPMatrixLocation, const GLint& uMVMatrixLocation, const GLint& uNormalMatrixLocation, glm::mat4& ProjMatrix, const std::vector<ShapeVertex>& vertices, TrackballCamera& camera) const
 {
     glm::mat4 MVMatrix = glm::translate(
         glm::mat4(1.f),
         glm::vec3(position.x, position.y, -20.f)
     );
-
     glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+    glm::mat4 ViewMatrix   = camera.getViewMatrix();
+    glm::mat4 MVPMatrix    = ProjMatrix * ViewMatrix * MVMatrix;
 
-    glUniformMatrix4fv(uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-    glUniformMatrix4fv(uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+    glUniformMatrix4fv(uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
+    glUniformMatrix4fv(uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
     glUniformMatrix4fv(uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
     vao.bind();

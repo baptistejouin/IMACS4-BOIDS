@@ -130,7 +130,7 @@ void Boids::update(float delta_time)
     }
 }
 
-void Boids::draw(p6::Context& ctx) const
+void Boids::draw(p6::Context& ctx, TrackballCamera& camera) const
 {
     shader.use();
 
@@ -143,7 +143,7 @@ void Boids::draw(p6::Context& ctx) const
 
     for (auto const& boid : boids)
     {
-        boid.draw(vao, uMVPMatrixLocation, uMVMatrixLocation, uNormalMatrixLocation, ProjMatrix, vertices);
+        boid.draw(vao, uMVPMatrixLocation, uMVMatrixLocation, uNormalMatrixLocation, ProjMatrix, vertices, camera);
     }
 }
 

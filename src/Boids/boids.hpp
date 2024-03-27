@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "Boids/boid.hpp"
+#include "Camera/trackball.hpp"
 #include "Utils/Geometry.hpp"
 #include "Utils/IBO.hpp"
 #include "Utils/VAO.hpp"
@@ -18,7 +19,7 @@ public:
 
     // methods
     void update(float delta_time);
-    void draw(p6::Context& ctx) const;
+    void draw(p6::Context& ctx, TrackballCamera& camera) const;
     void addBoid();
     void removeBoid();
     void reset();
