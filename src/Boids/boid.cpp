@@ -1,12 +1,12 @@
 #include "boid.hpp"
 
-glm::vec2 get_random_position()
+glm::vec3 get_random_position()
 {
-    return glm::vec2{p6::random::number(-.8f, .8f), p6::random::number(-.8f, .8f)};
+    return glm::vec3{p6::random::number(-.8f, .8f), p6::random::number(-.8f, .8f), p6::random::number(-.8f, .8f)};
 }
 
 // constructor
-Boid::Boid(p6::Color color, glm::vec2 position, glm::vec2 velocity, float size)
+Boid::Boid(p6::Color color, glm::vec3 position, glm::vec3 velocity, float size)
     : color(color)
     , position(position)
     , velocity(velocity)
@@ -16,8 +16,8 @@ Boid::Boid(p6::Color color, glm::vec2 position, glm::vec2 velocity, float size)
 
 Boid::Boid()
     : color(p6::Color{0.0f, 1.0f, 1.0f})
-    , position(glm::vec2{get_random_position()})
-    , velocity(glm::vec2{0, 0})
+    , position(glm::vec3{get_random_position()})
+    , velocity(glm::vec3{0, 0, 0})
     , size(0.01f)
 {}
 
@@ -30,7 +30,7 @@ void Boid::draw(const VAO& vao, const GLint& uMVPMatrixLocation, const GLint& uM
 {
     glm::mat4 MVMatrix = glm::translate(
         glm::mat4(1.f),
-        glm::vec3(position.x, position.y, -20.f)
+        glm::vec3(position.x, position.y, position.z)
     );
     glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
     glm::mat4 ViewMatrix   = camera.getViewMatrix();
@@ -48,17 +48,17 @@ void Boid::draw(const VAO& vao, const GLint& uMVPMatrixLocation, const GLint& uM
     vao.unbind();
 }
 
-glm::vec2 Boid::getPosition() const
+glm::vec3 Boid::getPosition() const
 {
     return position;
 }
 
-glm::vec2 Boid::getVelocity() const
+glm::vec3 Boid::getVelocity() const
 {
     return velocity;
 }
 
-void Boid::setVelocity(glm::vec2 newVelocity)
+void Boid::setVelocity(glm::vec3 newVelocity)
 {
     velocity = newVelocity;
 }

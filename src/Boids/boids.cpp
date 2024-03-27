@@ -8,7 +8,7 @@ Boids::Boids(int nbBoids)
     , uMVPMatrixLocation(glGetUniformLocation(shader.id(), "uMVPMatrix"))
     , uMVMatrixLocation(glGetUniformLocation(shader.id(), "uMVMatrix"))
     , uNormalMatrixLocation(glGetUniformLocation(shader.id(), "uNormalMatrix"))
-    , vertices(Geometry::sphere_vertices(1.f, 32, 16))
+    , vertices(Geometry::sphere_vertices(.01f, 32, 16))
 {
     vbo.bind();
     vao.bind();
@@ -39,9 +39,9 @@ void Boids::update(float delta_time)
     for (auto& boid : boids)
     {
         // Zero all accumulator variables (can't do this in one line in C)
-        glm::vec2 posAvg           = {0, 0};
-        glm::vec2 velAvg           = {0, 0};
-        glm::vec2 closeD           = {0, 0};
+        glm::vec3 posAvg           = {0, 0, 0};
+        glm::vec3 velAvg           = {0, 0, 0};
+        glm::vec3 closeD           = {0, 0, 0};
         int       neighboringBoids = 0;
 
         // For every other boid in the flock
@@ -50,9 +50,9 @@ void Boids::update(float delta_time)
             if (&boid != &otherBoid)
             {
                 // Calculate the distance between the two boids
-                glm::vec2 d = boid.getPosition() - otherBoid.getPosition();
+                glm::vec3 d = boid.getPosition() - otherBoid.getPosition();
 
-                if (std::fabs(d.x) < params.visualRange && std::fabs(d.y) < params.visualRange)
+                if (std::fabs(d.x) < params.visualRange && std::fabs(d.y) < params.visualRange && std::fabs(d.z) < params.visualRange)
                 {
                     float distance = glm::length(d);
 
@@ -74,9 +74,9 @@ void Boids::update(float delta_time)
             }
         }
 
-        glm::vec2 centeringForce = {0, 0};
-        glm::vec2 matchingForce  = {0, 0};
-        glm::vec2 avoidanceForce = {0, 0};
+        glm::vec3 centeringForce = {0, 0, 0};
+        glm::vec3 matchingForce  = {0, 0, 0};
+        glm::vec3 avoidanceForce = {0, 0, 0};
 
         if (neighboringBoids > 0)
         {
@@ -96,21 +96,29 @@ void Boids::update(float delta_time)
         boid.setVelocity(boid.getVelocity() + avoidanceForce + centeringForce + matchingForce);
 
         // If the boid is near an edge, make it turn by turnFactor
-        if (boid.getPosition().x < -.8) // Square radius
+        if (boid.getPosition().x < params.bounds.x[0]) // Square radius
         {
-            boid.setVelocity(boid.getVelocity() + glm::vec2(params.turnFactor, 0));
+            boid.setVelocity(boid.getVelocity() + glm::vec3(params.turnFactor, 0, 0));
         }
-        if (boid.getPosition().x > .8)
+        if (boid.getPosition().x > params.bounds.x[1])
         {
-            boid.setVelocity(boid.getVelocity() + glm::vec2(-params.turnFactor, 0));
+            boid.setVelocity(boid.getVelocity() + glm::vec3(-params.turnFactor, 0, 0));
         }
-        if (boid.getPosition().y < -.8)
+        if (boid.getPosition().y < params.bounds.y[0])
         {
-            boid.setVelocity(boid.getVelocity() + glm::vec2(0, params.turnFactor));
+            boid.setVelocity(boid.getVelocity() + glm::vec3(0, params.turnFactor, 0));
         }
-        if (boid.getPosition().y > .8)
+        if (boid.getPosition().y > params.bounds.y[1])
         {
-            boid.setVelocity(boid.getVelocity() + glm::vec2(0, -params.turnFactor));
+            boid.setVelocity(boid.getVelocity() + glm::vec3(0, -params.turnFactor, 0));
+        }
+        if (boid.getPosition().z < params.bounds.z[0])
+        {
+            boid.setVelocity(boid.getVelocity() + glm::vec3(0, 0, params.turnFactor));
+        }
+        if (boid.getPosition().z > params.bounds.z[1])
+        {
+            boid.setVelocity(boid.getVelocity() + glm::vec3(0, 0, -params.turnFactor));
         }
 
         float speed = glm::length(boid.getVelocity());
@@ -151,7 +159,7 @@ void Boids::reset()
 {
     for (auto& boid : boids)
     {
-        boid.set_position({0.f, 0.f});
+        boid.set_position({0.f, 0.f, 0.f});
     }
 }
 
