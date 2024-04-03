@@ -34,8 +34,7 @@ void View::update(p6::Context& ctx)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // _environment.draw(ctx);
-
+    _environment.draw(ctx);
     _renderer.render_boids(ctx, _camera, _boids.get_boids());
     _boids.update(ctx.delta_time());
     _check_events(ctx);

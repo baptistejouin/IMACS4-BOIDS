@@ -1,5 +1,4 @@
 #include "boids.hpp"
-#include "Renderer/renderer.hpp"
 #include "glm/fwd.hpp"
 
 Boids::Boids(int nbBoids)
