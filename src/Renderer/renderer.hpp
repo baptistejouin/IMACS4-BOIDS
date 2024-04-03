@@ -23,7 +23,7 @@ struct Mesh {
 
 class Renderer {
 public:
-    Renderer();
+    Renderer() = default;
 
     void render_boids(p6::Context& ctx, TrackballCamera& camera, std::vector<Boid> boids) const;
 

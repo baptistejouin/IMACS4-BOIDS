@@ -34,11 +34,6 @@ Mesh::Mesh()
     vao.unbind();
 }
 
-Renderer::Renderer()
-    : _boids_mesh()
-{
-}
-
 void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, std::vector<Boid> boids) const
 {
     _boids_mesh.shader.use();
