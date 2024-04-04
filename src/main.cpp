@@ -1,6 +1,4 @@
 #include <cstdlib>
-#include "Boids/boids.hpp"
-#include "Environment/environment.hpp"
 #include "View/view.hpp"
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest/doctest.h"
