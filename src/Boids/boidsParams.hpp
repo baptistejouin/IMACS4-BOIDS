@@ -1,12 +1,21 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
+struct Bounds {
+    glm::vec2 x;
+    glm::vec2 y;
+    glm::vec2 z;
+};
+
 struct BoidsParams {
-    float turnFactor{0.03f};
-    float visualRange{.15f};
-    float protectedRange{.065f};
-    float centeringFactor{.001f};
-    float avoidFactor{.9f};
-    float matchingFactor{.02f};
-    float maxSpeed{.8f};
-    float minSpeed{.5f};
+    float  turn_factor{0.03f};
+    float  visual_range{.15f};
+    float  protected_range{.065f};
+    float  centering_factor{.001f};
+    float  avoid_factor{.9f};
+    float  matching_factor{.02f};
+    float  max_speed{.8f};
+    float  min_speed{.5f};
+    Bounds bounds{{-0.8f, 0.8f}, {-0.8f, 0.8f}, {-0.8f, 0.8f}};
 };

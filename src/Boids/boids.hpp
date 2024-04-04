@@ -7,17 +7,15 @@
 
 class Boids {
 public:
-    Boids(int nbBoids = 250);
+    Boids(int nbBoids = 500);
 
-    // methods
     void update(float delta_time);
-    void draw(p6::Context& ctx) const;
-    void addBoid();
-    void removeBoid();
     void reset();
     void gui();
 
+    std::vector<Boid> get_boids();
+
 private:
-    std::vector<Boid> boids;
-    BoidsParams       params;
+    std::vector<Boid> _boids;
+    BoidsParams       _params;
 };
