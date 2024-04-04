@@ -12,7 +12,7 @@ int main()
     if (doctest::Context{}.run() != 0)
         return EXIT_FAILURE;
 
-    auto ctx = p6::Context{{.title = "Boids 2D"}};
+    auto ctx = p6::Context{{.title = "Boids 3D - DEVAUX, JOUIN"}};
 
     View view;
 
