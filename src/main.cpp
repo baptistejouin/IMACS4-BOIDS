@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include "View/view.hpp"
 #define DOCTEST_CONFIG_IMPLEMENT
+#define TINYOBJLOADER_IMPLEMENTATION
 #include "doctest/doctest.h"
 #include "p6/p6.h"
 
