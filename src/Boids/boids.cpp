@@ -110,7 +110,7 @@ void Boids::update(float delta_time)
     }
 }
 
-std::vector<Boid> Boids::get_boids()
+const std::vector<Boid>& Boids::get_boids()
 {
     return _boids;
 }
@@ -126,7 +126,7 @@ void Boids::reset()
 void Boids::gui()
 {
     ImGui::Begin("Boids");
-    ImGui::Text("Number of boids: %d", _boids.size());
+    ImGui::Text("Number of boids: %zu", _boids.size());
     if (ImGui::Button("Reset boids"))
     {
         reset();

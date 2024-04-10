@@ -33,7 +33,7 @@ public:
     Renderer() = default;
 
     static std::unique_ptr<Mesh> load_model(const std::filesystem::path& obj_path);
-    void                         render_boids(p6::Context& ctx, TrackballCamera& camera, std::vector<Boid> boids) const;
+    void                         render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const;
 
 private:
     std::unique_ptr<Mesh> _boids_mesh = load_model("assets/models/oiseauBake.obj");

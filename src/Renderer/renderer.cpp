@@ -31,7 +31,7 @@ Mesh::Mesh(const std::vector<ShapeVertex>& custom_vertices, const ShaderPaths& s
 Mesh::Mesh()
     : Mesh(Geometry::sphere_vertices(.01f, 32, 16)) {} // the default mesh is a sphere with default shaders
 
-void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, std::vector<Boid> boids) const
+void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const
 {
     _boids_mesh->shader.use();
 
@@ -44,13 +44,14 @@ void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, std::vect
 
     for (auto const& boid : boids)
     {
-        glm::mat4 MVMatrix = glm::translate(
+        glm::mat4 ViewMatrix = camera.get_view_matrix();
+        glm::mat4 MVMatrix   = glm::translate(
             glm::mat4(1.f),
-            glm::vec3(boid.get_position())
+            boid.get_position()
         );
 
         // scale down the boid
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(.04f));
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(.03f));
 
         // rotate the boid with the velocity
         glm::vec3 velocity = boid.get_velocity();
@@ -64,7 +65,6 @@ void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, std::vect
         MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 
         glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
-        glm::mat4 ViewMatrix   = camera.get_view_matrix();
         glm::mat4 MVPMatrix    = ProjMatrix * ViewMatrix * MVMatrix;
 
         glUniformMatrix4fv(_boids_mesh->uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
@@ -108,7 +108,7 @@ std::unique_ptr<Mesh> Renderer::load_model(const std::filesystem::path& obj_path
 
             for (size_t v = 0; v < fv; ++v)
             {
-                auto& idx = shape.mesh.indices[fv * f + v];
+                const auto& idx = shape.mesh.indices[fv * f + v];
 
                 auto vx = attrib.vertices[3 * idx.vertex_index + 0];
                 auto vy = attrib.vertices[3 * idx.vertex_index + 1];

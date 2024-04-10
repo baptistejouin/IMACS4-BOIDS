@@ -7,13 +7,13 @@
 
 class Boids {
 public:
-    Boids(int nbBoids = 500);
+    explicit Boids(int nbBoids = 500);
 
     void update(float delta_time);
     void reset();
     void gui();
 
-    std::vector<Boid> get_boids();
+    const std::vector<Boid>& get_boids();
 
 private:
     std::vector<Boid> _boids;
