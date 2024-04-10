@@ -1,6 +1,8 @@
 #pragma once
 
 #include <tiny_obj_loader.h>
+#include <cmath>
+#include <string>
 #include "Boids/boid.hpp"
 #include "Camera/trackball.hpp"
 #include "Utils/Geometry.hpp"
@@ -10,6 +12,10 @@
 #include "glm/gtx/transform.hpp"
 #include "p6/p6.h"
 
+struct ShaderPaths {
+    std::filesystem::path vertex_shader_path;
+    std::filesystem::path fragment_shader_path;
+};
 struct Mesh {
     VBO                      vbo;
     VAO                      vao;
@@ -19,18 +25,16 @@ struct Mesh {
     GLint                    uNormalMatrixLocation;
     std::vector<ShapeVertex> vertices;
 
-    Mesh();
+    explicit Mesh(const std::vector<ShapeVertex>& custom_vertices, const ShaderPaths& shader_paths = ShaderPaths{"assets/shaders/3D.vs.glsl", "assets/shaders/normals.fs.glsl"});
+    Mesh(); // default constructor
 };
-
 class Renderer {
 public:
     Renderer() = default;
 
-    static std::unique_ptr<Mesh> load_model(std::string const& obj_path);
-    static void                  render_model(p6::Context& ctx, TrackballCamera& camera, Mesh const& mesh);
-
-    void render_boids(p6::Context& ctx, TrackballCamera& camera, std::vector<Boid> boids) const;
+    static std::unique_ptr<Mesh> load_model(const std::filesystem::path& obj_path);
+    void                         render_boids(p6::Context& ctx, TrackballCamera& camera, std::vector<Boid> boids) const;
 
 private:
-    Mesh _boids_mesh;
+    std::unique_ptr<Mesh> _boids_mesh = load_model("assets/models/oiseauBake.obj");
 };

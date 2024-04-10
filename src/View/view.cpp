@@ -19,12 +19,6 @@ void View::init(p6::Context& ctx)
         _camera.move_front(scroll.dy / 50);
     };
 
-    auto test_model = Renderer::load_model("assets/models/oiseauBake.obj");
-    if (test_model)
-    {
-        _models.push_back(std::move(test_model));
-    }
-
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -43,6 +37,5 @@ void View::update(p6::Context& ctx)
     _environment.draw(ctx);
     _renderer.render_boids(ctx, _camera, _boids.get_boids());
     _boids.update(ctx.delta_time());
-    Renderer::render_model(ctx, _camera, *_models[0]);
     _check_events(ctx);
 }
