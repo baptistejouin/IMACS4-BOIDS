@@ -1,15 +1,14 @@
 #pragma once
 
+#include <p6/p6.h>
 #include <tiny_obj_loader.h>
-#include <cmath>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/transform.hpp>
 #include "Boids/boid.hpp"
 #include "Camera/trackball.hpp"
 #include "Utils/Geometry.hpp"
 #include "Utils/VAO.hpp"
 #include "Utils/VBO.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glm/gtx/transform.hpp"
-#include "p6/p6.h"
 
 struct ShaderPaths {
     std::filesystem::path vertex_shader_path;

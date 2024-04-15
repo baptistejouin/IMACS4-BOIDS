@@ -1,14 +1,8 @@
 #pragma once
 
+#include <p6/p6.h>
 #include <glm/glm.hpp>
-#include "Camera/trackball.hpp"
-#include "Utils/Geometry.hpp"
-#include "Utils/VAO.hpp"
-#include "boidsParams.hpp"
 #include "glm/fwd.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glm/gtx/transform.hpp"
-#include "p6/p6.h"
 
 class Boid {
 public:

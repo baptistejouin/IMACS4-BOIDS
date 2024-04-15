@@ -1,8 +1,7 @@
 #pragma once
 
 #include <imgui.h>
-#include "glm/glm.hpp"
-#include "p6/p6.h"
+#include <p6/p6.h>
 
 struct EnvironmentParams {
     p6::Color background_color{0.7f, 0.7f, 0.7f};
