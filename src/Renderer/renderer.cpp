@@ -1,11 +1,12 @@
 #include "Renderer/renderer.hpp"
 
-Mesh::Mesh(const std::vector<ShapeVertex>& custom_vertices, const ShaderPaths& shader_paths)
-    : shader(p6::load_shader(shader_paths.vertex_shader_path, shader_paths.fragment_shader_path)), vertices(custom_vertices)
+Mesh::Mesh(const std::filesystem::path& obj_path, const std::filesystem::path& texture_path, const ShaderPaths& shader_paths)
+    : shader(p6::load_shader(shader_paths.vertex_shader_path, shader_paths.fragment_shader_path)), vertices(Renderer::load_model(obj_path)), texture_id(Renderer::load_texture(texture_path))
 {
     uMVPMatrixLocation    = glGetUniformLocation(shader.id(), "uMVPMatrix");
     uMVMatrixLocation     = glGetUniformLocation(shader.id(), "uMVMatrix");
     uNormalMatrixLocation = glGetUniformLocation(shader.id(), "uNormalMatrix");
+    uText                 = glGetUniformLocation(shader.id(), "uText");
 
     vbo.bind();
     vao.bind();
@@ -29,11 +30,11 @@ Mesh::Mesh(const std::vector<ShapeVertex>& custom_vertices, const ShaderPaths& s
 }
 
 Mesh::Mesh()
-    : Mesh(Geometry::sphere_vertices(.01f, 32, 16)) {} // the default mesh is a sphere with default shaders
+    : shader(p6::load_shader("shaders/vertex.glsl", "shaders/fragment.glsl")), vertices(Geometry::sphere_vertices(.01f, 32, 16)), texture_id(0) {}
 
 void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const
 {
-    _boids_mesh->shader.use();
+    _boids_mesh.shader.use();
 
     glm::mat4 ProjMatrix = glm::perspective(
         glm::radians(70.f),
@@ -44,43 +45,90 @@ void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std
 
     for (auto const& boid : boids)
     {
+        // get the view matrix
         glm::mat4 ViewMatrix = camera.get_view_matrix();
-        glm::mat4 MVMatrix   = glm::translate(
-            glm::mat4(1.f),
-            boid.get_position()
-        );
 
-        // scale down the boid
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(.03f));
+        // move the boid to its position
+        glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), boid.get_position());
 
-        // rotate the boid with the velocity
-        glm::vec3 velocity = boid.get_velocity();
-        glm::vec3 up       = glm::vec3(0.f, 1.f, 0.f);
-        glm::vec3 axis     = glm::cross(up, velocity);
-        float     angle    = glm::acos(glm::dot(up, velocity) / (glm::length(up) * glm::length(velocity)));
+        // scale the boid
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(boid.get_size()));
 
-        MVMatrix = glm::rotate(MVMatrix, angle, axis);
+        // rotate the boid to face the direction it is going
+        MVMatrix = glm::rotate(MVMatrix, boid.get_look_at_angle_and_axis().first, boid.get_look_at_angle_and_axis().second);
 
         // by default the model is facing to the top, so we need to rotate it
         MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 
+        // compute the normal matrix
         glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
-        glm::mat4 MVPMatrix    = ProjMatrix * ViewMatrix * MVMatrix;
 
-        glUniformMatrix4fv(_boids_mesh->uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
-        glUniformMatrix4fv(_boids_mesh->uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
-        glUniformMatrix4fv(_boids_mesh->uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+        // compute the MVP matrix
+        glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;
 
-        _boids_mesh->vao.bind();
-        // think about texture here (binding)
+        // send the matrices to the shader
+        glUniform1i(_boids_mesh.uText, 0);
+        glUniformMatrix4fv(_boids_mesh.uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
+        glUniformMatrix4fv(_boids_mesh.uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
+        glUniformMatrix4fv(_boids_mesh.uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(_boids_mesh->vertices.size()));
+        _boids_mesh.vao.bind();
 
-        _boids_mesh->vao.unbind();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _boids_mesh.texture_id);
+
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(_boids_mesh.vertices.size()));
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        _boids_mesh.vao.unbind();
     }
 }
 
-std::unique_ptr<Mesh> Renderer::load_model(const std::filesystem::path& obj_path)
+GLuint Renderer::load_texture(const std::filesystem::path& texture_path)
+{
+    if (texture_path.empty())
+        return 0;
+
+    // Load Image using p6
+    img::Image textureImage = p6::load_image_buffer(texture_path);
+
+    // Check if the image is loaded
+    if (textureImage.data() == nullptr)
+    {
+        std::cerr << "Failed to load texture" << std::endl;
+        exit(1);
+    }
+
+    GLuint textureID = 0;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Generate the texture
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGBA,
+        static_cast<GLsizei>(textureImage.width()),
+        static_cast<GLsizei>(textureImage.height()),
+        0,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        textureImage.data()
+    );
+
+    // Set Texture Parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return textureID;
+}
+
+std::vector<ShapeVertex> Renderer::load_model(const std::filesystem::path& obj_path)
 {
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./assets/models"; // Chemin vers les fichiers de matériaux
@@ -126,5 +174,5 @@ std::unique_ptr<Mesh> Renderer::load_model(const std::filesystem::path& obj_path
         }
     }
 
-    return std::make_unique<Mesh>(vertices);
+    return vertices; // Returning by value directly
 }

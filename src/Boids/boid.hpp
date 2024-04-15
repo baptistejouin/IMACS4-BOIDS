@@ -17,8 +17,10 @@ public:
 
     void update(float delta_time);
 
-    glm::vec3 get_position() const;
-    glm::vec3 get_velocity() const;
+    glm::vec3                   get_position() const { return _position; }
+    glm::vec3                   get_velocity() const { return _velocity; }
+    float                       get_size() const { return _size; }
+    std::pair<float, glm::vec3> get_look_at_angle_and_axis() const;
 
     void set_velocity(glm::vec3 newVelocity);
     void set_position(glm::vec3 position) { _position = position; }

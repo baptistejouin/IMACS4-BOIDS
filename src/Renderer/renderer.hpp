@@ -2,7 +2,6 @@
 
 #include <tiny_obj_loader.h>
 #include <cmath>
-#include <string>
 #include "Boids/boid.hpp"
 #include "Camera/trackball.hpp"
 #include "Utils/Geometry.hpp"
@@ -23,18 +22,31 @@ struct Mesh {
     GLint                    uMVPMatrixLocation;
     GLint                    uMVMatrixLocation;
     GLint                    uNormalMatrixLocation;
+    GLint                    uText;
     std::vector<ShapeVertex> vertices;
+    GLuint                   texture_id;
 
-    explicit Mesh(const std::vector<ShapeVertex>& custom_vertices, const ShaderPaths& shader_paths = ShaderPaths{"assets/shaders/3D.vs.glsl", "assets/shaders/normals.fs.glsl"});
+    explicit Mesh(
+        const std::filesystem::path& obj_path,
+        const std::filesystem::path& texture_path,
+        const ShaderPaths&           shader_paths
+    );
     Mesh(); // default constructor
 };
+
 class Renderer {
 public:
     Renderer() = default;
 
-    static std::unique_ptr<Mesh> load_model(const std::filesystem::path& obj_path);
-    void                         render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const;
+    static GLuint                   load_texture(const std::filesystem::path& texture_path);
+    static std::vector<ShapeVertex> load_model(const std::filesystem::path& obj_path);
+
+    void render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const;
 
 private:
-    std::unique_ptr<Mesh> _boids_mesh = load_model("assets/models/oiseauBake.obj");
+    Mesh _boids_mesh = Mesh(
+        "assets/models/oiseauBake.obj",
+        "assets/textures/oiseauBake.jpg",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/textures.fs.glsl"}
+    );
 };
