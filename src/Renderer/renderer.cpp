@@ -29,9 +29,6 @@ Mesh::Mesh(const std::filesystem::path& obj_path, const std::filesystem::path& t
     vao.unbind();
 }
 
-Mesh::Mesh()
-    : shader(p6::load_shader("shaders/vertex.glsl", "shaders/fragment.glsl")), vertices(Geometry::sphere_vertices(.01f, 32, 16)), texture_id(0) {}
-
 void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const
 {
     _boids_mesh.shader.use();
@@ -121,7 +118,7 @@ GLuint Renderer::load_texture(const std::filesystem::path& texture_path)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    // glGenerateMipmap(GL_TEXTURE_2D);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 

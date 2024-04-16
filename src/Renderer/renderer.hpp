@@ -30,7 +30,6 @@ struct Mesh {
         const std::filesystem::path& texture_path,
         const ShaderPaths&           shader_paths
     );
-    Mesh(); // default constructor
 };
 
 class Renderer {
