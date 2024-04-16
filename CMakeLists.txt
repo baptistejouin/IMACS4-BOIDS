@@ -50,6 +50,14 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(p6)
 target_link_libraries(${PROJECT_NAME} PRIVATE p6::p6)
 
+# ---Add tinyobjloader library---
+FetchContent_Declare(
+    tinyobjloader
+    GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader
+    GIT_TAG cab4ad7254cbf7eaaafdb73d272f99e92f166df8
+)
+FetchContent_MakeAvailable(tinyobjloader)
+target_link_libraries(${PROJECT_NAME} PRIVATE tinyobjloader)
+
 # ---Copy the assets and the shaders to the output folder (where the executable is created)---
-# Cool__target_copy_folder(${PROJECT_NAME} assets)
-Cool__target_copy_folder(${PROJECT_NAME} shaders)
+Cool__target_copy_folder(${PROJECT_NAME} assets)
