@@ -82,6 +82,53 @@ void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std
     }
 }
 
+void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const Terrain& terrain) const
+{
+    _terrain_mesh.shader.use();
+
+    glm::mat4 ProjMatrix = glm::perspective(
+        glm::radians(70.f),
+        ctx.aspect_ratio(),
+        0.1f,
+        100.f
+    );
+
+    // get the view matrix
+    glm::mat4 ViewMatrix = camera.get_view_matrix();
+
+    // move the terrain to its position
+    glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), terrain.position);
+
+    // scale the terrain
+    MVMatrix = glm::scale(MVMatrix, terrain.scale);
+
+    // by default the model is facing to the top, so we need to rotate it
+    // MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+
+    // compute the normal matrix
+    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+
+    // compute the MVP matrix
+    glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;
+
+    // send the matrices to the shader
+    glUniform1i(_terrain_mesh.uText, 0);
+    glUniformMatrix4fv(_terrain_mesh.uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
+    glUniformMatrix4fv(_terrain_mesh.uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
+    glUniformMatrix4fv(_terrain_mesh.uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    _terrain_mesh.vao.bind();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _terrain_mesh.texture_id);
+
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(_terrain_mesh.vertices.size()));
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    _terrain_mesh.vao.unbind();
+}
+
 GLuint Renderer::load_texture(const std::filesystem::path& texture_path)
 {
     if (texture_path.empty())
@@ -118,7 +165,8 @@ GLuint Renderer::load_texture(const std::filesystem::path& texture_path)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glGenerateMipmap(GL_TEXTURE_2D);
+    // TODO(baptiste): (optionnal) Add mipmaping support for the textures (with the distance of the camera to the object)
+    // glGenerateMipmap(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -128,7 +176,7 @@ GLuint Renderer::load_texture(const std::filesystem::path& texture_path)
 std::vector<ShapeVertex> Renderer::load_model(const std::filesystem::path& obj_path)
 {
     tinyobj::ObjReaderConfig reader_config;
-    reader_config.mtl_search_path = "./assets/models"; // Chemin vers les fichiers de matériaux
+    reader_config.mtl_search_path = "./assets/models";
 
     tinyobj::ObjReader reader;
     if (!reader.ParseFromFile(obj_path, reader_config))
@@ -171,5 +219,5 @@ std::vector<ShapeVertex> Renderer::load_model(const std::filesystem::path& obj_p
         }
     }
 
-    return vertices; // Returning by value directly
+    return vertices;
 }

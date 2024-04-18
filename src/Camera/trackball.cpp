@@ -1,7 +1,7 @@
 #include "Camera/trackball.hpp"
 
 TrackballCamera::TrackballCamera() noexcept
-    : _distance(10.0f)
+    : _distance(3.0f)
     , _angleX(0.0f)
     , _angleY(0.0f)
 {

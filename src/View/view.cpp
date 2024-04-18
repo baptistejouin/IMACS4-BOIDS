@@ -36,6 +36,7 @@ void View::update(p6::Context& ctx)
 
     _environment.draw(ctx);
     _renderer.render_boids(ctx, _camera, _boids.get_boids());
+    _renderer.render_terrain(ctx, _camera, _environment.get_terrain());
     _boids.update(ctx.delta_time());
     _check_events(ctx);
 }

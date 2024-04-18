@@ -1,7 +1,6 @@
 #pragma once
 
 #include <p6/p6.h>
-#include <vector>
 #include "Boids/boids.hpp"
 #include "Camera/trackball.hpp"
 #include "Environment/environment.hpp"
