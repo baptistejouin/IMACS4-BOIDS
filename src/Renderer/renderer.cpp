@@ -76,7 +76,7 @@ void finalize_rendering(const Mesh& mesh, const std::vector<Element>& point_ligh
 
     // TODO only one light is supported for now
     glUniform3fv(mesh.uniformVariables.at("uLightPos_vs"), 1, glm::value_ptr(lightPos_vs));
-    glUniform3fv(mesh.uniformVariables.at("uLightIntensity"), 1, glm::value_ptr(glm::vec3(2.f)));
+    glUniform3fv(mesh.uniformVariables.at("uLightIntensity"), 1, glm::value_ptr(glm::vec3(1.f)));
 
     render_mesh(mesh);
 }

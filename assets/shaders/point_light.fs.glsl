@@ -7,15 +7,13 @@ in vec2 vTexCoords;
 
 out vec4 fragColor;
 
-const int MAX_LIGHTS = 5;
-
 //uniforms
 uniform sampler2D uText;
 uniform vec3 uKd;
 uniform vec3 uKs;
 uniform float uShininess;
-uniform vec3 uLightPos_vs[MAX_LIGHTS];
-uniform vec3 uLightIntensity[MAX_LIGHTS];
+uniform vec3 uLightPos_vs;
+uniform vec3 uLightIntensity;
 
 vec3 blinnPhong(vec3 lightPos_vs, vec3 lightIntensity)
 {
@@ -30,12 +28,10 @@ vec3 blinnPhong(vec3 lightPos_vs, vec3 lightIntensity)
 
 void main()
 {
-    vec3 lighting = vec3(0.0);
-    for (int i = 0; i < MAX_LIGHTS; ++i) {
-        if (i >= MAX_LIGHTS) break;
-        lighting += blinnPhong(uLightPos_vs[i], uLightIntensity[i]);
-    }
-
+    float ambient = 0.20f;
+    vec3 light_color = blinnPhong(uLightPos_vs, uLightIntensity);
     vec4 color = texture(uText, vTexCoords);
-    fragColor = vec4(color.rgb * lighting, color.a);
+    
+    fragColor = vec4(ambient * uKd + light_color, 1.0) * color;
+
 }
