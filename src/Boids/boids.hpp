@@ -13,7 +13,7 @@ public:
     void reset();
     void gui();
 
-    const std::vector<Boid>& get_boids();
+    const std::vector<Boid>& get_boids() const { return _boids; }
 
 private:
     std::vector<Boid> _boids;

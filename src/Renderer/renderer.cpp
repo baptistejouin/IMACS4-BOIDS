@@ -1,15 +1,9 @@
 #include "Renderer/renderer.hpp"
 
-Mesh::Mesh(const std::filesystem::path& obj_path, const std::filesystem::path& texture_path, const ShaderPaths& shader_paths)
-    : shader(p6::load_shader(shader_paths.vertex_shader_path, shader_paths.fragment_shader_path)), vertices(Renderer::load_model(obj_path)), texture_id(Renderer::load_texture(texture_path))
+void setup_mesh(const Mesh& mesh)
 {
-    uMVPMatrixLocation    = glGetUniformLocation(shader.id(), "uMVPMatrix");
-    uMVMatrixLocation     = glGetUniformLocation(shader.id(), "uMVMatrix");
-    uNormalMatrixLocation = glGetUniformLocation(shader.id(), "uNormalMatrix");
-    uText                 = glGetUniformLocation(shader.id(), "uText");
-
-    vbo.bind();
-    vao.bind();
+    mesh.vbo.bind();
+    mesh.vao.bind();
 
     static constexpr GLuint VERTEX_ATTR_POSITION = 0;
     glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
@@ -23,88 +17,40 @@ Mesh::Mesh(const std::filesystem::path& obj_path, const std::filesystem::path& t
     glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
     glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), reinterpret_cast<const GLvoid*>(offsetof(ShapeVertex, texCoords)));
 
-    vbo.fill(vertices);
+    mesh.vbo.fill(mesh.vertices);
 
-    vbo.unbind();
-    vao.unbind();
+    mesh.vbo.unbind();
+    mesh.vao.unbind();
 }
 
-void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const
+void render_mesh(const Mesh& mesh)
 {
-    _boids_mesh.shader.use();
+    mesh.vao.bind();
 
-    glm::mat4 ProjMatrix = glm::perspective(
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mesh.texture_id);
+
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(mesh.vertices.size()));
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    mesh.vao.unbind();
+}
+
+void setup_view_projection(p6::Context& ctx, TrackballCamera& camera, glm::mat4& ProjMatrix, glm::mat4& ViewMatrix)
+{
+    ProjMatrix = glm::perspective(
         glm::radians(70.f),
         ctx.aspect_ratio(),
         0.1f,
         100.f
     );
 
-    for (auto const& boid : boids)
-    {
-        // get the view matrix
-        glm::mat4 ViewMatrix = camera.get_view_matrix();
-
-        // move the boid to its position
-        glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), boid.get_position());
-
-        // scale the boid
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(boid.get_size()));
-
-        // rotate the boid to face the direction it is going
-        MVMatrix = glm::rotate(MVMatrix, boid.get_look_at_angle_and_axis().first, boid.get_look_at_angle_and_axis().second);
-
-        // by default the model is facing to the top, so we need to rotate it
-        MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-
-        // compute the normal matrix
-        glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
-
-        // compute the MVP matrix
-        glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;
-
-        // send the matrices to the shader
-        glUniform1i(_boids_mesh.uText, 0);
-        glUniformMatrix4fv(_boids_mesh.uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
-        glUniformMatrix4fv(_boids_mesh.uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
-        glUniformMatrix4fv(_boids_mesh.uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-
-        _boids_mesh.vao.bind();
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _boids_mesh.texture_id);
-
-        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(_boids_mesh.vertices.size()));
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        _boids_mesh.vao.unbind();
-    }
+    ViewMatrix = camera.get_view_matrix();
 }
 
-void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const Terrain& terrain) const
+void finalize_rendering(const Mesh& mesh, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
 {
-    _terrain_mesh.shader.use();
-
-    glm::mat4 ProjMatrix = glm::perspective(
-        glm::radians(70.f),
-        ctx.aspect_ratio(),
-        0.1f,
-        100.f
-    );
-
-    // get the view matrix
-    glm::mat4 ViewMatrix = camera.get_view_matrix();
-
-    // move the terrain to its position
-    glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), terrain.position);
-
-    // scale the terrain
-    MVMatrix = glm::scale(MVMatrix, terrain.scale);
-
-    // by default the model is facing to the top, so we need to rotate it
-    // MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-
     // compute the normal matrix
     glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
@@ -112,21 +58,23 @@ void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const T
     glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;
 
     // send the matrices to the shader
-    glUniform1i(_terrain_mesh.uText, 0);
-    glUniformMatrix4fv(_terrain_mesh.uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
-    glUniformMatrix4fv(_terrain_mesh.uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
-    glUniformMatrix4fv(_terrain_mesh.uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+    glUniform1i(mesh.uText, 0);
+    glUniformMatrix4fv(mesh.uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
+    glUniformMatrix4fv(mesh.uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
+    glUniformMatrix4fv(mesh.uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-    _terrain_mesh.vao.bind();
+    render_mesh(mesh);
+}
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _terrain_mesh.texture_id);
+Mesh::Mesh(const std::filesystem::path& obj_path, const std::filesystem::path& texture_path, const ShaderPaths& shader_paths)
+    : shader(p6::load_shader(shader_paths.vertex_shader_path, shader_paths.fragment_shader_path)), vertices(Renderer::load_model(obj_path)), texture_id(Renderer::load_texture(texture_path))
+{
+    uMVPMatrixLocation    = glGetUniformLocation(shader.id(), "uMVPMatrix");
+    uMVMatrixLocation     = glGetUniformLocation(shader.id(), "uMVMatrix");
+    uNormalMatrixLocation = glGetUniformLocation(shader.id(), "uNormalMatrix");
+    uText                 = glGetUniformLocation(shader.id(), "uText");
 
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(_terrain_mesh.vertices.size()));
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    _terrain_mesh.vao.unbind();
+    setup_mesh(*this);
 }
 
 GLuint Renderer::load_texture(const std::filesystem::path& texture_path)
@@ -220,4 +168,50 @@ std::vector<ShapeVertex> Renderer::load_model(const std::filesystem::path& obj_p
     }
 
     return vertices;
+}
+
+void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const
+{
+    _boids_mesh.shader.use();
+
+    glm::mat4 ProjMatrix, ViewMatrix;
+
+    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
+
+    for (auto const& boid : boids)
+    {
+        // get the view matrix
+        glm::mat4 ViewMatrix = camera.get_view_matrix();
+
+        // move the boid to its position
+        glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), boid.get_position());
+
+        // scale the boid
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(boid.get_size()));
+
+        // rotate the boid to face the direction it is going
+        MVMatrix = glm::rotate(MVMatrix, boid.get_look_at_angle_and_axis().first, boid.get_look_at_angle_and_axis().second);
+
+        // by default the model is facing to the top, so we need to rotate it
+        MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+
+        finalize_rendering(_boids_mesh, ProjMatrix, ViewMatrix, MVMatrix);
+    }
+}
+
+void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const Terrain& terrain) const
+{
+    _terrain_mesh.shader.use();
+
+    glm::mat4 ProjMatrix, ViewMatrix;
+
+    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
+
+    // move the terrain to its position
+    glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), terrain.position);
+
+    // scale the terrain
+    MVMatrix = glm::scale(MVMatrix, terrain.scale);
+
+    finalize_rendering(_terrain_mesh, ProjMatrix, ViewMatrix, MVMatrix);
 }
