@@ -35,8 +35,9 @@ void View::update(p6::Context& ctx)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     _environment.draw(ctx);
-    _renderer.render_boids(ctx, _camera, _boids.get_boids());
-    _renderer.render_terrain(ctx, _camera, _environment.get_terrain());
+    _renderer.render_boids(ctx, _camera, _boids.get_boids(), _environment.get_point_light());
+    _renderer.render_terrain(ctx, _camera, _environment.get_terrain(), _environment.get_point_light());
+    _renderer.render_point_light(ctx, _camera, _environment.get_point_light());
     _boids.update(ctx.delta_time());
     _check_events(ctx);
 }

@@ -49,7 +49,7 @@ void setup_view_projection(p6::Context& ctx, TrackballCamera& camera, glm::mat4&
     ViewMatrix = camera.get_view_matrix();
 }
 
-void finalize_rendering(const Mesh& mesh, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
+void finalize_rendering(const Mesh& mesh, const std::vector<Element>& point_light, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
 {
     // compute the normal matrix
     glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
@@ -57,22 +57,71 @@ void finalize_rendering(const Mesh& mesh, const glm::mat4& ProjMatrix, const glm
     // compute the MVP matrix
     glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;
 
+    // TODO only one light is supported for now
+    // compute the light position in view space
+    glm::vec3 lightPos_vs = glm::vec3(ViewMatrix * glm::vec4(point_light[0].position, 1.f));
+
     // send the matrices to the shader
-    glUniform1i(mesh.uText, 0);
-    glUniformMatrix4fv(mesh.uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
-    glUniformMatrix4fv(mesh.uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
-    glUniformMatrix4fv(mesh.uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+    glUniformMatrix4fv(mesh.uniformVariables.at("uMVPMatrix"), 1, GL_FALSE, glm::value_ptr(MVPMatrix));
+    glUniformMatrix4fv(mesh.uniformVariables.at("uMVMatrix"), 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
+    glUniformMatrix4fv(mesh.uniformVariables.at("uNormalMatrix"), 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    // send the texture properties to the shader
+    glUniform1i(mesh.uniformVariables.at("uText"), 0);
+
+    // send the light properties to the shader
+    glUniform3fv(mesh.uniformVariables.at("uKd"), 1, glm::value_ptr(glm::vec3(0.95f, 0.95f, 0.95f)));
+    glUniform3fv(mesh.uniformVariables.at("uKs"), 1, glm::value_ptr(glm::vec3(0.95f, 0.95f, 0.95f)));
+    glUniform1f(mesh.uniformVariables.at("uShininess"), 100.f);
+
+    // TODO only one light is supported for now
+    glUniform3fv(mesh.uniformVariables.at("uLightPos_vs"), 1, glm::value_ptr(lightPos_vs));
+    glUniform3fv(mesh.uniformVariables.at("uLightIntensity"), 1, glm::value_ptr(glm::vec3(2.f)));
 
     render_mesh(mesh);
+}
+
+void add_uniform_variable(Mesh& mesh, const std::string& uniform_name)
+{
+    mesh.uniformVariables[uniform_name] = glGetUniformLocation(mesh.shader.id(), uniform_name.c_str());
 }
 
 Mesh::Mesh(const std::filesystem::path& obj_path, const std::filesystem::path& texture_path, const ShaderPaths& shader_paths)
     : shader(p6::load_shader(shader_paths.vertex_shader_path, shader_paths.fragment_shader_path)), vertices(Renderer::load_model(obj_path)), texture_id(Renderer::load_texture(texture_path))
 {
-    uMVPMatrixLocation    = glGetUniformLocation(shader.id(), "uMVPMatrix");
-    uMVMatrixLocation     = glGetUniformLocation(shader.id(), "uMVMatrix");
-    uNormalMatrixLocation = glGetUniformLocation(shader.id(), "uNormalMatrix");
-    uText                 = glGetUniformLocation(shader.id(), "uText");
+    add_uniform_variable(*this, "uMVPMatrix");
+    add_uniform_variable(*this, "uMVMatrix");
+    add_uniform_variable(*this, "uNormalMatrix");
+
+    // add the texture uniform
+    add_uniform_variable(*this, "uText");
+
+    // add the light uniform
+    add_uniform_variable(*this, "uKd");
+    add_uniform_variable(*this, "uKs");
+    add_uniform_variable(*this, "uShininess");
+    add_uniform_variable(*this, "uLightPos_vs");
+    add_uniform_variable(*this, "uLightIntensity");
+
+    setup_mesh(*this);
+}
+
+Mesh::Mesh(const std::vector<ShapeVertex>& vertices, const ShaderPaths& shader_paths)
+    : shader(p6::load_shader(shader_paths.vertex_shader_path, shader_paths.fragment_shader_path)), vertices(vertices), texture_id(0)
+{
+    add_uniform_variable(*this, "uMVPMatrix");
+    add_uniform_variable(*this, "uMVMatrix");
+    add_uniform_variable(*this, "uNormalMatrix");
+
+    // add the texture uniform
+    add_uniform_variable(*this, "uText");
+
+    // add the light uniform
+    add_uniform_variable(*this, "uKd");
+    add_uniform_variable(*this, "uKs");
+    add_uniform_variable(*this, "uShininess");
+    add_uniform_variable(*this, "uLightPos_vs");
+    add_uniform_variable(*this, "uLightIntensity");
 
     setup_mesh(*this);
 }
@@ -170,7 +219,7 @@ std::vector<ShapeVertex> Renderer::load_model(const std::filesystem::path& obj_p
     return vertices;
 }
 
-void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const
+void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids, const std::vector<Element>& point_light) const
 {
     _boids_mesh.shader.use();
 
@@ -195,11 +244,11 @@ void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std
         // by default the model is facing to the top, so we need to rotate it
         MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 
-        finalize_rendering(_boids_mesh, ProjMatrix, ViewMatrix, MVMatrix);
+        finalize_rendering(_boids_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
     }
 }
 
-void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const Terrain& terrain) const
+void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const Element& terrain, const std::vector<Element>& point_light) const
 {
     _terrain_mesh.shader.use();
 
@@ -213,5 +262,25 @@ void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const T
     // scale the terrain
     MVMatrix = glm::scale(MVMatrix, terrain.scale);
 
-    finalize_rendering(_terrain_mesh, ProjMatrix, ViewMatrix, MVMatrix);
+    finalize_rendering(_terrain_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+}
+
+void Renderer::render_point_light(p6::Context& ctx, TrackballCamera& camera, const std::vector<Element>& point_light) const
+{
+    _point_light_mesh.shader.use();
+
+    glm::mat4 ProjMatrix, ViewMatrix;
+
+    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
+
+    for (auto const& light : point_light)
+    {
+        // move the light to its position
+        glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), light.position);
+
+        // scale the light
+        MVMatrix = glm::scale(MVMatrix, light.scale);
+
+        finalize_rendering(_point_light_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+    }
 }
