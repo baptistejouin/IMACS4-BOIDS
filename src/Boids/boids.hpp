@@ -5,8 +5,9 @@
 #include "Boids/boid.hpp"
 #include "boidsParams.hpp"
 
-float mapToInfinity(float value);
+float map_to_max_speed(float value, float max_speed);
 void  apply_bounds_force(Boid& boid, const BoidsParams& params);
+void  prevent_bounds_exit(Boid& boid, const BoidsParams& params);
 
 class Boids {
 public:
