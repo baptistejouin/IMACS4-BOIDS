@@ -6,6 +6,46 @@ Boids::Boids(int nbBoids)
 {
 }
 
+float mapToInfinity(float value)
+{
+    value = std::clamp(value, 0.0f, 1.0f);
+    return -std::log(1.0f - value) * .05f;
+}
+
+void apply_bounds_force(Boid& boid, const BoidsParams& params)
+{
+    if (boid.get_position().x < params.bounds.x[0] + params.bounds_force_range)
+    {
+        float approach_normalised = (params.bounds.x[0] - boid.get_position().x) / params.bounds_force_range;
+        boid.set_velocity(boid.get_velocity() + glm::vec3(mapToInfinity(approach_normalised), 0, 0));
+    }
+    if (boid.get_position().x > params.bounds.x[1] - params.bounds_force_range)
+    {
+        float approach_normalised = (boid.get_position().x - params.bounds.x[1]) / params.bounds_force_range;
+        boid.set_velocity(boid.get_velocity() + glm::vec3(-mapToInfinity(approach_normalised), 0, 0));
+    }
+    if (boid.get_position().y < params.bounds.y[0] + params.bounds_force_range)
+    {
+        float approach_normalised = (params.bounds.y[0] - boid.get_position().y) / params.bounds_force_range;
+        boid.set_velocity(boid.get_velocity() + glm::vec3(0, mapToInfinity(approach_normalised), 0));
+    }
+    if (boid.get_position().y > params.bounds.y[1] - params.bounds_force_range)
+    {
+        float approach_normalised = (boid.get_position().y - params.bounds.y[1]) / params.bounds_force_range;
+        boid.set_velocity(boid.get_velocity() + glm::vec3(0, -mapToInfinity(approach_normalised), 0));
+    }
+    if (boid.get_position().z < params.bounds.z[0] + params.bounds_force_range)
+    {
+        float approach_normalised = (params.bounds.z[0] - boid.get_position().z) / params.bounds_force_range;
+        boid.set_velocity(boid.get_velocity() + glm::vec3(0, 0, mapToInfinity(approach_normalised)));
+    }
+    if (boid.get_position().z > params.bounds.z[1] - params.bounds_force_range)
+    {
+        float approach_normalised = (boid.get_position().z - params.bounds.z[1]) / params.bounds_force_range;
+        boid.set_velocity(boid.get_velocity() + glm::vec3(0, 0, -mapToInfinity(approach_normalised)));
+    }
+}
+
 void Boids::update(float delta_time)
 {
     for (auto& boid : _boids)
@@ -67,42 +107,21 @@ void Boids::update(float delta_time)
 
         boid.set_velocity(boid.get_velocity() + avoidanceForce + centeringForce + matchingForce);
 
-        // If the boid is near an edge, make it turn by turnFactor
-        if (boid.get_position().x < _params.bounds.x[0]) // Square radius
-        {
-            boid.set_velocity(boid.get_velocity() + glm::vec3(_params.turn_factor, 0, 0));
-        }
-        if (boid.get_position().x > _params.bounds.x[1])
-        {
-            boid.set_velocity(boid.get_velocity() + glm::vec3(-_params.turn_factor, 0, 0));
-        }
-        if (boid.get_position().y < _params.bounds.y[0])
-        {
-            boid.set_velocity(boid.get_velocity() + glm::vec3(0, _params.turn_factor, 0));
-        }
-        if (boid.get_position().y > _params.bounds.y[1])
-        {
-            boid.set_velocity(boid.get_velocity() + glm::vec3(0, -_params.turn_factor, 0));
-        }
-        if (boid.get_position().z < _params.bounds.z[0])
-        {
-            boid.set_velocity(boid.get_velocity() + glm::vec3(0, 0, _params.turn_factor));
-        }
-        if (boid.get_position().z > _params.bounds.z[1])
-        {
-            boid.set_velocity(boid.get_velocity() + glm::vec3(0, 0, -_params.turn_factor));
-        }
-
         float speed = glm::length(boid.get_velocity());
+
+        apply_bounds_force(boid, _params);
+
+        // Normalize the boid's velocity
+        boid.set_velocity(glm::normalize(boid.get_velocity()) * speed);
 
         // Enforce minimum and maximum speeds
         if (speed > _params.max_speed)
         {
-            boid.set_velocity(boid.get_velocity() * (_params.max_speed / speed));
+            boid.set_velocity(glm::normalize(boid.get_velocity()) * _params.max_speed);
         }
         else if (speed < _params.min_speed)
         {
-            boid.set_velocity(boid.get_velocity() * (_params.min_speed / speed));
+            boid.set_velocity(glm::normalize(boid.get_velocity()) * _params.min_speed);
         }
 
         // Update the boid's position
@@ -126,7 +145,6 @@ void Boids::gui()
     {
         reset();
     }
-    ImGui::SliderFloat("Turn factor", &_params.turn_factor, .001f, .5f);
     ImGui::SliderFloat("Visual range", &_params.visual_range, .001f, .5f);
     ImGui::SliderFloat("Protected range", &_params.protected_range, .001f, .5f);
     ImGui::SliderFloat("Centering factor", &_params.centering_factor, .001f, .5f);
@@ -134,5 +152,6 @@ void Boids::gui()
     ImGui::SliderFloat("Matching factor", &_params.matching_factor, .001f, 1.f);
     ImGui::SliderFloat("Max speed", &_params.max_speed, .001f, 1.f);
     ImGui::SliderFloat("Min speed", &_params.min_speed, .001f, 1.f);
+    ImGui::SliderFloat("Bounds force range", &_params.bounds_force_range, .001f, .5f);
     ImGui::End();
 }

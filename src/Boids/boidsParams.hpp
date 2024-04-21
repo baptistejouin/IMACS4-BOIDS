@@ -9,7 +9,6 @@ struct Bounds {
 };
 
 struct BoidsParams {
-    float  turn_factor{0.03f};
     float  visual_range{.15f};
     float  protected_range{.065f};
     float  centering_factor{.001f};
@@ -18,4 +17,5 @@ struct BoidsParams {
     float  max_speed{.8f};
     float  min_speed{.5f};
     Bounds bounds{{-0.8f, 0.8f}, {-0.8f, 0.8f}, {-0.8f, 0.8f}};
+    float  bounds_force_range{0.3f};
 };
