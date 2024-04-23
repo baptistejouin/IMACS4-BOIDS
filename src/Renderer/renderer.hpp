@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 #include "Boids/boid.hpp"
-#include "Camera/trackball.hpp"
+#include "Camera/camera.hpp"
 #include "Environment/environment.hpp"
 #include "Utils/Geometry.hpp"
 #include "Utils/VAO.hpp"
@@ -40,8 +40,8 @@ public:
     static GLuint                   load_texture(const std::filesystem::path& texture_path);
     static std::vector<ShapeVertex> load_model(const std::filesystem::path& obj_path);
 
-    void render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const;
-    void render_terrain(p6::Context& ctx, TrackballCamera& camera, const Terrain& terrain) const;
+    void render_boids(p6::Context& ctx, Camera& camera, const std::vector<Boid>& boids) const;
+    void render_terrain(p6::Context& ctx, Camera& camera, const Terrain& terrain) const;
 
 private:
     Mesh _boids_mesh = Mesh(

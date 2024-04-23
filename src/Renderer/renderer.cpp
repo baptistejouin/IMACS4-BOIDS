@@ -37,7 +37,7 @@ void render_mesh(const Mesh& mesh)
     mesh.vao.unbind();
 }
 
-void setup_view_projection(p6::Context& ctx, TrackballCamera& camera, glm::mat4& ProjMatrix, glm::mat4& ViewMatrix)
+void setup_view_projection(p6::Context& ctx, Camera& camera, glm::mat4& ProjMatrix, glm::mat4& ViewMatrix)
 {
     ProjMatrix = glm::perspective(
         glm::radians(70.f),
@@ -170,7 +170,7 @@ std::vector<ShapeVertex> Renderer::load_model(const std::filesystem::path& obj_p
     return vertices;
 }
 
-void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const
+void Renderer::render_boids(p6::Context& ctx, Camera& camera, const std::vector<Boid>& boids) const
 {
     _boids_mesh.shader.use();
 
@@ -199,7 +199,7 @@ void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std
     }
 }
 
-void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const Terrain& terrain) const
+void Renderer::render_terrain(p6::Context& ctx, Camera& camera, const Terrain& terrain) const
 {
     _terrain_mesh.shader.use();
 

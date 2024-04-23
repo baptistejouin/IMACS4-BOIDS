@@ -1,4 +1,5 @@
 #include "View/view.hpp"
+#include "GLFW/glfw3.h"
 
 void View::init(p6::Context& ctx)
 {
@@ -11,12 +12,9 @@ void View::init(p6::Context& ctx)
 
     ctx.mouse_dragged = [this](p6::MouseDrag const& drag) {
         {
-            _camera.drag(drag.delta.y, drag.delta.x, 50.f);
+            _camera.rotate_left(-drag.delta.x * 300);
+            _camera.rotate_up(drag.delta.y * 300);
         }
-    };
-
-    ctx.mouse_scrolled = [this](p6::MouseScroll const& scroll) {
-        _camera.move_front(scroll.dy / 50);
     };
 
     glEnable(GL_DEPTH_TEST);
@@ -27,6 +25,22 @@ void View::_check_events(p6::Context& ctx)
     if (ctx.key_is_pressed(GLFW_KEY_ESCAPE))
     {
         ctx.stop();
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_W))
+    {
+        _camera.move_front(0.01f);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_S))
+    {
+        _camera.move_front(-0.01f);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_A))
+    {
+        _camera.move_left(0.01f);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_D))
+    {
+        _camera.move_left(-0.01f);
     }
 }
 
