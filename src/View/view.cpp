@@ -7,16 +7,14 @@ void View::init(p6::Context& ctx)
     ctx.imgui = [&]() {
         _environment.gui();
         _boids.gui();
+        _renderer.gui();
     };
 
     ctx.mouse_dragged = [this](p6::MouseDrag const& drag) {
         {
-            _camera.drag(drag.delta.y, drag.delta.x, 50.f);
+            _camera.rotate_left(-drag.delta.x * 300);
+            _camera.rotate_up(drag.delta.y * 300);
         }
-    };
-
-    ctx.mouse_scrolled = [this](p6::MouseScroll const& scroll) {
-        _camera.move_front(scroll.dy / 50);
     };
 
     glEnable(GL_DEPTH_TEST);
@@ -28,6 +26,22 @@ void View::_check_events(p6::Context& ctx)
     {
         ctx.stop();
     }
+    if (ctx.key_is_pressed(GLFW_KEY_W))
+    {
+        _camera.move_front(0.01f);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_S))
+    {
+        _camera.move_front(-0.01f);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_A))
+    {
+        _camera.move_left(0.01f);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_D))
+    {
+        _camera.move_left(-0.01f);
+    }
 }
 
 void View::update(p6::Context& ctx)
@@ -37,6 +51,8 @@ void View::update(p6::Context& ctx)
     _environment.draw(ctx);
     _renderer.render_boids(ctx, _camera, _boids.get_boids(), _environment.get_points_light());
     _renderer.render_terrain(ctx, _camera, _environment.get_terrain(), _environment.get_points_light());
+    _renderer.render_arpenteur(ctx, _camera, .03f, _environment.get_points_light());
+    _renderer.render_cube(ctx, _camera, 1.2f, _environment.get_points_light());
     _renderer.render_point_light(ctx, _camera, _environment.get_points_light());
     _boids.update(ctx.delta_time());
     _check_events(ctx);

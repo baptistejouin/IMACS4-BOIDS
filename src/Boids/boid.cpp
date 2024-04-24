@@ -1,8 +1,14 @@
 #include "boid.hpp"
+#include "glm/fwd.hpp"
 
 glm::vec3 get_random_position()
 {
     return glm::vec3{p6::random::number(-.8f, .8f), p6::random::number(-.8f, .8f), p6::random::number(-.8f, .8f)};
+}
+
+glm::vec3 get_random_velocity()
+{
+    return glm::vec3{p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f)};
 }
 
 Boid::Boid(glm::vec3 position, glm::vec3 velocity, float size)
@@ -14,7 +20,7 @@ Boid::Boid(glm::vec3 position, glm::vec3 velocity, float size)
 
 Boid::Boid()
     : _position(glm::vec3{get_random_position()})
-    , _velocity(glm::vec3{0, 0, 0})
+    , _velocity(glm::vec3{get_random_velocity()})
     , _size(0.03f)
 {}
 
