@@ -1,50 +1,25 @@
 #pragma once
 
 #include <p6/p6.h>
-#include <tiny_obj_loader.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 #include "Boids/boid.hpp"
-#include "Camera/camera.hpp"
+#include "Camera/trackball.hpp"
 #include "Environment/environment.hpp"
-#include "Utils/Geometry.hpp"
-#include "Utils/VAO.hpp"
-#include "Utils/VBO.hpp"
-
-struct ShaderPaths {
-    std::filesystem::path vertex_shader_path;
-    std::filesystem::path fragment_shader_path;
-};
-struct Mesh {
-    VBO                      vbo;
-    VAO                      vao;
-    p6::Shader               shader;
-    GLint                    uMVPMatrixLocation;
-    GLint                    uMVMatrixLocation;
-    GLint                    uNormalMatrixLocation;
-    GLint                    uText;
-    std::vector<ShapeVertex> vertices;
-    GLuint                   texture_id;
-
-    explicit Mesh(
-        const std::filesystem::path& obj_path,
-        const std::filesystem::path& texture_path,
-        const ShaderPaths&           shader_paths
-    );
-};
+#include "Renderer/mesh.hpp"
 
 class Renderer {
 public:
     Renderer() = default;
 
-    static GLuint                   load_texture(const std::filesystem::path& texture_path);
-    static std::vector<ShapeVertex> load_model(const std::filesystem::path& obj_path);
-
-    void render_boids(p6::Context& ctx, Camera& camera, const std::vector<Boid>& boids) const;
-    void render_terrain(p6::Context& ctx, Camera& camera, const Terrain& terrain) const;
-    void render_arpenteur(p6::Context& ctx, Camera& camera, float scale) const;
+    // TODO(baptistejouin) ctx is pass only for the aspect ratio, maybe we can find a better way to do it
+    void render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids, const std::vector<Light>& point_light) const;
+    void render_terrain(p6::Context& ctx, TrackballCamera& camera, const Element& terrain, const std::vector<Light>& point_light) const;
+    void render_point_light(p6::Context& ctx, TrackballCamera& camera, const std::vector<Light>& point_light) const;
 
 private:
+    // fs : point_light, textures, normals
+
     Mesh _boids_mesh = Mesh(
         "assets/models/avion-LQ.obj",
         "assets/textures/papier.jpg",
