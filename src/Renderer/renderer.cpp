@@ -193,7 +193,7 @@ void Renderer::render_boids(p6::Context& ctx, Camera& camera, const std::vector<
         MVMatrix = glm::rotate(MVMatrix, boid.get_look_at_angle_and_axis().first, boid.get_look_at_angle_and_axis().second);
 
         // by default the model is facing to the top, so we need to rotate it
-        MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+        // MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 
         finalize_rendering(_boids_mesh, ProjMatrix, ViewMatrix, MVMatrix);
     }

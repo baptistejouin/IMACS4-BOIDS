@@ -46,8 +46,8 @@ public:
 
 private:
     Mesh _boids_mesh = Mesh(
-        "assets/models/oiseauBake.obj",
-        "assets/textures/oiseauBake.jpg",
+        "assets/models/avion-LQ.obj",
+        "assets/textures/papier.jpg",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/textures.fs.glsl"}
     );
     Mesh _terrain_mesh = Mesh(
