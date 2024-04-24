@@ -15,7 +15,7 @@ void setup_view_projection(p6::Context& ctx, TrackballCamera& camera, glm::mat4&
 void finalize_rendering(const Mesh& mesh, const std::vector<Light>& point_light, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
 {
     // compute the normal matrix
-    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(ViewMatrix));
 
     // compute the MVP matrix
     glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;

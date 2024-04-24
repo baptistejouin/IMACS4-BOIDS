@@ -21,8 +21,8 @@ void main() {
     vec4 vertexNormal = vec4(aVertexNormal, 1);
 
     // Calcul des valeurs de sortie
-    vPosition_vs = vec3(uMVMatrix * vertexPosition);
-    vNormal_vs = vec3(uNormalMatrix * vertexNormal);
+    vPosition_vs = vec3(uMVMatrix * vertexPosition) / vertexPosition.w;
+    vNormal_vs = vec3(uNormalMatrix * vertexNormal) / vertexNormal.w;
     vTexCoords = aVertexTexCoords;
 
     // Calcul de la position projetée
