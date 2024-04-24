@@ -17,6 +17,7 @@ public:
     void render_terrain(p6::Context& ctx, Camera& camera, const Element& terrain, const std::vector<Light>& point_light) const;
     void render_point_light(p6::Context& ctx, Camera& camera, const std::vector<Light>& point_light) const;
     void render_arpenteur(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
+    void render_cube(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
 
     void gui();
 
@@ -38,6 +39,11 @@ private:
     Mesh _arpenteur_mesh = Mesh(
         "assets/models/ballons.obj",
         "assets/textures/ballons.png",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _cube_mesh = Mesh(
+        "assets/models/cube.obj",
+        "assets/textures/log.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
     Mesh _point_light_mesh = Mesh(

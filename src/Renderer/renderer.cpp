@@ -142,6 +142,23 @@ void Renderer::render_arpenteur(p6::Context& ctx, Camera& camera, float scale, c
     finalize_rendering(_arpenteur_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
 }
 
+void Renderer::render_cube(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const
+{
+    _cube_mesh.shader.use();
+
+    glm::mat4 ProjMatrix, ViewMatrix;
+
+    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
+
+    // move the cube to its position
+    glm::mat4 MVMatrix = glm::scale(glm::mat4(1.f), glm::vec3(scale));
+
+    // scale the cube
+    MVMatrix = glm::scale(MVMatrix, glm::vec3(scale));
+
+    finalize_rendering(_cube_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+}
+
 void Renderer::gui()
 {
     ImGui::Begin("Renderer");
