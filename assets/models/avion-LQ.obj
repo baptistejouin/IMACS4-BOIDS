@@ -1,6 +1,6 @@
 # Blender 4.1.1
 # www.blender.org
-mtllib ballons.mtl
+mtllib avion-LQ.mtl
 o Plane
 v 1.158667 -0.475639 -0.000000
 v 0.000000 1.607787 0.000000
