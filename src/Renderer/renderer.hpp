@@ -56,8 +56,8 @@ private:
         {"assets/shaders/3D.vs.glsl", "assets/shaders/textures.fs.glsl"}
     );
     Mesh _arpenteur_mesh = Mesh(
-        "assets/models/oiseauBake.obj",
-        "assets/textures/oiseauBake.jpg",
+        "assets/models/ballons.obj",
+        "assets/textures/ballons.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/textures.fs.glsl"}
     );
 };
