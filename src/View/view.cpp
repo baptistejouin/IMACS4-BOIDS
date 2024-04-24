@@ -17,6 +17,10 @@ void View::init(p6::Context& ctx)
         }
     };
 
+    ctx.mouse_scrolled = [this](p6::MouseScroll const& scroll) {
+        _camera.zoom(scroll.dy, 0.01f);
+    };
+
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -41,6 +45,14 @@ void View::_check_events(p6::Context& ctx, Bounds bounds)
     if (ctx.key_is_pressed(GLFW_KEY_D))
     {
         _camera.move_left(-0.01f, bounds);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_SPACE))
+    {
+        _camera.move_up(0.01f, bounds);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_LEFT_SHIFT))
+    {
+        _camera.move_up(-0.01f, bounds);
     }
 }
 
