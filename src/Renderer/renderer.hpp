@@ -32,8 +32,8 @@ private:
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
     Mesh _terrain_mesh = Mesh(
-        "assets/models/terrain.bake.obj",
-        "assets/textures/terrain.bake.col.png",
+        "assets/models/terrain.obj",
+        "assets/textures/terrain.col.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
     Mesh _arpenteur_mesh = Mesh(
