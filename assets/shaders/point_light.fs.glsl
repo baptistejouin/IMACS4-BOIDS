@@ -7,13 +7,15 @@ in vec2 vTexCoords;
 
 out vec4 fragColor;
 
+const int nb_lights = 2; // Nombre de points de lumière supportés
+
 //uniforms
 uniform sampler2D uText;
 uniform vec3 uKd;
 uniform vec3 uKs;
 uniform float uShininess;
-uniform vec3 uLightPos_vs;
-uniform vec3 uLightIntensity;
+uniform vec3 uLightPos_vs[nb_lights]; // Augmentez la taille du tableau selon le nombre de points de lumière supportés
+uniform vec3 uLightIntensity[nb_lights]; // Intensité de chaque lumière
 
 vec3 blinnPhong(vec3 lightPos_vs, vec3 lightIntensity)
 {
@@ -21,7 +23,7 @@ vec3 blinnPhong(vec3 lightPos_vs, vec3 lightIntensity)
     vec3 wi = normalize(lightPos_vs - vPosition_vs);
     vec3 Li = lightIntensity / (d * d);
     vec3 N = normalize(vNormal_vs);
-    vec3 H = (N + wi) / 2.0; // vec3 H = normalize(wi + vec3(0, 0, 1));
+    vec3 H = normalize(wi + vec3(0, 0, 1)); // Vec3 H = (N + wi) / 2.0; (A changer)
 
     return Li * (uKd * max(0.0, dot(N, wi)) + uKs * pow(max(0.0, dot(N, H)), uShininess));
 }
@@ -29,9 +31,14 @@ vec3 blinnPhong(vec3 lightPos_vs, vec3 lightIntensity)
 void main()
 {
     float ambient = 0.20f;
-    vec3 light_color = blinnPhong(uLightPos_vs, uLightIntensity);
+    vec3 total_light_color = vec3(0.0); // Couleur totale de la lumière
+
+    for (int i = 0; i < nb_lights; ++i) // Parcours de chaque point de lumière
+    {
+        total_light_color += blinnPhong(uLightPos_vs[i], uLightIntensity[i]);
+    }
+
     vec4 color = texture(uText, vTexCoords);
     
-    fragColor = vec4(ambient * uKd + light_color, 1.0) * color;
-
+    fragColor = vec4(ambient * uKd + total_light_color, 1.0) * color;
 }

@@ -12,17 +12,13 @@ void setup_view_projection(p6::Context& ctx, TrackballCamera& camera, glm::mat4&
     ViewMatrix = camera.get_view_matrix();
 }
 
-void finalize_rendering(const Mesh& mesh, const std::vector<Element>& point_light, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
+void finalize_rendering(const Mesh& mesh, const std::vector<Light>& point_light, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
 {
     // compute the normal matrix
     glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
     // compute the MVP matrix
     glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;
-
-    // TODO only one light is supported for now
-    // compute the light position in view space
-    glm::vec3 lightPos_vs = glm::vec3(ViewMatrix * glm::vec4(point_light[0].position, 1.f));
 
     // send the matrices to the shader
     glUniformMatrix4fv(mesh.uniform_variables.at("uMVPMatrix"), 1, GL_FALSE, glm::value_ptr(MVPMatrix));
@@ -38,6 +34,10 @@ void finalize_rendering(const Mesh& mesh, const std::vector<Element>& point_ligh
                 glUniform1f(iter->second, value);
             else if constexpr (std::is_same_v<decltype(value), glm::vec3>)
                 glUniform3fv(iter->second, 1, glm::value_ptr(value));
+            else
+            {
+                throw std::runtime_error("Unsupported type");
+            }
         }
     };
 
@@ -49,13 +49,18 @@ void finalize_rendering(const Mesh& mesh, const std::vector<Element>& point_ligh
 
     set_uniform_variable("uShininess", 100.f);
 
-    set_uniform_variable("uLightPos_vs", lightPos_vs);
-    set_uniform_variable("uLightIntensity", glm::vec3(1.f));
+    for (size_t i = 0; i < point_light.size(); ++i)
+    {
+        const glm::vec3 light_position = ViewMatrix * glm::vec4(point_light[i].position, 1.f);
+
+        set_uniform_variable("uLightPos_vs[" + std::to_string(i) + "]", light_position);
+        set_uniform_variable("uLightIntensity[" + std::to_string(i) + "]", point_light[i].intensity);
+    }
 
     mesh.render_mesh();
 }
 
-void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids, const std::vector<Element>& point_light) const
+void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids, const std::vector<Light>& point_light) const
 {
     _boids_mesh.shader.use();
 
@@ -84,7 +89,7 @@ void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std
     }
 }
 
-void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const Element& terrain, const std::vector<Element>& point_light) const
+void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const Element& terrain, const std::vector<Light>& point_light) const
 {
     _terrain_mesh.shader.use();
 
@@ -101,7 +106,7 @@ void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const E
     finalize_rendering(_terrain_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
 }
 
-void Renderer::render_point_light(p6::Context& ctx, TrackballCamera& camera, const std::vector<Element>& point_light) const
+void Renderer::render_point_light(p6::Context& ctx, TrackballCamera& camera, const std::vector<Light>& point_light) const
 {
     _point_light_mesh.shader.use();
 
@@ -115,7 +120,7 @@ void Renderer::render_point_light(p6::Context& ctx, TrackballCamera& camera, con
         glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), light.position);
 
         // scale the light
-        MVMatrix = glm::scale(MVMatrix, light.scale);
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.1f));
 
         finalize_rendering(_point_light_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
     }

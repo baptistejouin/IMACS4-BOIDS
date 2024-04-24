@@ -27,13 +27,14 @@ public:
         const ShaderPaths&           shader_paths
     );
 
-    // This constructor is used for other meshes that are not loaded from an obj file and do not have a texture
+    // This constructor is used for other meshes that are not loaded from an obj file and do not have a texture and no light properties
     explicit Mesh(
         const std::vector<ShapeVertex>& vertices,
         const ShaderPaths&              shader_paths
     );
 
     void add_uniform_variable(const std::string& name);
+    void add_light_uniforms(int lightIndex);
     void render_mesh() const;
 
 private:

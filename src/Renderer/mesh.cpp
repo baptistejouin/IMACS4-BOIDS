@@ -107,8 +107,9 @@ Mesh::Mesh(const std::filesystem::path& obj_path, const std::filesystem::path& t
     add_uniform_variable("uKd");
     add_uniform_variable("uKs");
     add_uniform_variable("uShininess");
-    add_uniform_variable("uLightPos_vs");
-    add_uniform_variable("uLightIntensity");
+
+    add_light_uniforms(0);
+    add_light_uniforms(1);
 
     setup_mesh();
 }
@@ -149,6 +150,12 @@ void Mesh::setup_mesh()
 void Mesh::add_uniform_variable(const std::string& name)
 {
     uniform_variables[name] = glGetUniformLocation(shader.id(), name.c_str());
+}
+
+void Mesh::add_light_uniforms(int lightIndex)
+{
+    add_uniform_variable("uLightPos_vs[" + std::to_string(lightIndex) + "]");
+    add_uniform_variable("uLightIntensity[" + std::to_string(lightIndex) + "]");
 }
 
 void Mesh::render_mesh() const
