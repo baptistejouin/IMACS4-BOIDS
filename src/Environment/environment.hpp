@@ -17,8 +17,8 @@ struct Light {
 };
 
 struct Terrain {
-    glm::vec3 position{0.f, -1.75f, 0.f};
-    glm::vec3 scale{0.3f};
+    glm::vec3 position;
+    glm::vec3 scale;
 };
 
 struct EnvironmentParams {

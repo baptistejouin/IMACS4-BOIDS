@@ -1,4 +1,5 @@
 #include "View/view.hpp"
+#include <cstdio>
 
 void View::init(p6::Context& ctx)
 {
@@ -41,6 +42,20 @@ void View::_check_events(p6::Context& ctx)
     if (ctx.key_is_pressed(GLFW_KEY_D))
     {
         _camera.move_left(-0.01f);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_SPACE))
+    {
+        _camera.move_up(0.01f);
+    }
+    if (ctx.key_is_pressed(GLFW_KEY_LEFT_SHIFT))
+    {
+        _camera.move_up(-0.01f);
+    }
+
+    // debug
+    if (ctx.key_is_pressed(GLFW_KEY_L))
+    {
+        printf("Camera position: %f %f %f\n", _camera.get_position().x, _camera.get_position().y, _camera.get_position().z);
     }
 }
 

@@ -47,7 +47,7 @@ private:
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
     Mesh _flower_01_mesh = Mesh(
-        "assets/models/flower_white.obj",
+        "assets/models/flower_blue.obj",
         "assets/textures/flowers.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );

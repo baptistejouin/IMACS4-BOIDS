@@ -18,6 +18,11 @@ void Camera::move_left(float t)
     _position += t * _left;
 }
 
+void Camera::move_up(float t)
+{
+    _position += t * _up;
+}
+
 void Camera::compute_direction_vectors()
 {
     _front = glm::vec3(

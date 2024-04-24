@@ -8,7 +8,14 @@ out vec4 fragColor; // Couleur du fragment
 
 void main()
 {
-	// On normalise la normale pour l'afficher comme une couleur
-	vec3 color = normalize(vNormal_vs);
-	fragColor = vec4(color, 1.0);
+	// // On normalise la normale pour l'afficher comme une couleur
+	// vec3 color = normalize(vNormal_vs);
+	// fragColor = vec4(color, 1.0);
+
+	// affichage des normal en nuance de blanc, comme sur blender 
+	vec3 normal = normalize(vNormal_vs);
+	fragColor = vec4(normal * 0.5 + 0.5, 1.0);
+
+	
+	
 }

@@ -137,7 +137,7 @@ void Renderer::render_point_light(p6::Context& ctx, Camera& camera, const std::v
         glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), light.position);
 
         // scale the light
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.1f));
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.05f));
 
         finalize_rendering(_point_light_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
     }
@@ -197,5 +197,27 @@ void Renderer::gui()
         }
         ImGui::EndCombo();
     }
+
+    if (ImGui::BeginCombo("Type of flowers", "Blue"))
+    {
+        if (ImGui::Selectable("Blue"))
+        {
+            _flower_01_mesh.change_mesh("assets/models/flower_blue.obj");
+        }
+        if (ImGui::Selectable("Red"))
+        {
+            _flower_01_mesh.change_mesh("assets/models/flower_red.obj");
+        }
+        if (ImGui::Selectable("Yellow"))
+        {
+            _flower_01_mesh.change_mesh("assets/models/flower_yellow.obj");
+        }
+        if (ImGui::Selectable("White"))
+        {
+            _flower_01_mesh.change_mesh("assets/models/flower_white.obj");
+        }
+        ImGui::EndCombo();
+    }
+
     ImGui::End();
 }

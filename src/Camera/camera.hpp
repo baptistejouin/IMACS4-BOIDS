@@ -9,6 +9,7 @@ public:
     Camera() noexcept;
     void      move_front(float delta);
     void      move_left(float delta);
+    void      move_up(float delta);
     void      rotate_left(float degrees);
     void      rotate_up(float degrees);
     glm::mat4 get_view_matrix() const;
