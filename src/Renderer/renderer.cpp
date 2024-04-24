@@ -1,4 +1,5 @@
 #include "Renderer/renderer.hpp"
+#include <imgui.h>
 
 void setup_view_projection(p6::Context& ctx, Camera& camera, glm::mat4& ProjMatrix, glm::mat4& ViewMatrix)
 {
@@ -15,7 +16,7 @@ void setup_view_projection(p6::Context& ctx, Camera& camera, glm::mat4& ProjMatr
 void finalize_rendering(const Mesh& mesh, const std::vector<Light>& point_light, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
 {
     // compute the normal matrix
-    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(ViewMatrix));
 
     // compute the MVP matrix
     glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;
@@ -159,4 +160,42 @@ void Renderer::render_arpenteur(p6::Context& ctx, Camera& camera, float scale, c
     // rotate the arpenteur to face the direction of the camera
 
     finalize_rendering(_arpenteur_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+}
+
+void Renderer::render_cube(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const
+{
+    _cube_mesh.shader.use();
+
+    glm::mat4 ProjMatrix, ViewMatrix;
+
+    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
+
+    // move the cube to its position
+    glm::mat4 MVMatrix = glm::scale(glm::mat4(1.f), glm::vec3(scale));
+
+    // scale the cube
+    MVMatrix = glm::scale(MVMatrix, glm::vec3(scale));
+
+    finalize_rendering(_cube_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+}
+
+void Renderer::gui()
+{
+    ImGui::Begin("Renderer");
+
+    if (ImGui::BeginCombo("Level Of Detail", _LOD)) // The second parameter is the label previewed before opening the combo.
+    {
+        if (ImGui::Selectable("High"))
+        {
+            _LOD = "High";
+            _boids_mesh.change_mesh("assets/models/avion-HQ.obj");
+        }
+        if (ImGui::Selectable("Low"))
+        {
+            _LOD = "Low";
+            _boids_mesh.change_mesh("assets/models/avion-LQ.obj");
+        }
+        ImGui::EndCombo();
+    }
+    ImGui::End();
 }

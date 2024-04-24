@@ -176,3 +176,20 @@ void Mesh::render_mesh() const
 
     vao.unbind();
 }
+
+void Mesh::change_mesh(const std::filesystem::path& obj_path, const std::filesystem::path& texture_path)
+{
+    if (!obj_path.empty())
+        vertices = load_model(obj_path);
+    if (!texture_path.empty())
+        texture_id = load_texture(texture_path);
+
+    vbo.bind();
+    vao.bind();
+
+    vbo.clear();
+    vbo.fill(vertices);
+
+    vbo.unbind();
+    vao.unbind();
+}

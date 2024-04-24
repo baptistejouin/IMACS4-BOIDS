@@ -18,28 +18,37 @@ public:
     void render_point_light(p6::Context& ctx, Camera& camera, const std::vector<Light>& point_light) const;
     void render_arpenteur(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
     void render_flowers(p6::Context& ctx, Camera& camera, const std::vector<Element>& flowers, const std::vector<Light>& point_light) const;
+    void render_cube(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
+    void gui();
 
 private:
+    const char* _LOD = "High";
+
     // fs : point_light, textures, normals
 
     Mesh _boids_mesh = Mesh(
-        "assets/models/avion-LQ.obj",
+        "assets/models/avion-HQ.obj",
         "assets/textures/papier.jpg",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
     Mesh _terrain_mesh = Mesh(
-        "assets/models/terrain.bake.obj",
-        "assets/textures/terrain.bake.col.png",
-        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
-    );
-    Mesh _flower_01_mesh = Mesh(
-        "assets/models/flower_white.obj",
-        "assets/textures/flowers.png",
+        "assets/models/terrain.obj",
+        "assets/textures/terrain.col.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
     Mesh _arpenteur_mesh = Mesh(
         "assets/models/ballons.obj",
         "assets/textures/ballons.png",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _cube_mesh = Mesh(
+        "assets/models/cube.obj",
+        "assets/textures/log.png",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _flower_01_mesh = Mesh(
+        "assets/models/flower_white.obj",
+        "assets/textures/flowers.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
     Mesh _point_light_mesh = Mesh(

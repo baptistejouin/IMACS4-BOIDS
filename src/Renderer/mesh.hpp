@@ -36,6 +36,7 @@ public:
     void add_uniform_variable(const std::string& name);
     void add_light_uniforms(int lightIndex);
     void render_mesh() const;
+    void change_mesh(const std::filesystem::path& obj_path = "", const std::filesystem::path& texture_path = "");
 
 private:
     void setup_mesh();

@@ -44,6 +44,10 @@ public:
     {
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(ShapeVertex), vertices.data(), GL_STATIC_DRAW);
     }
+    void clear() const
+    {
+        glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
+    }
     void unbind() const
     {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
