@@ -11,21 +11,30 @@ const int nb_lights = 2; // Nombre de points de lumière supportés
 
 //uniforms
 uniform sampler2D uText;
-uniform vec3 uKd;
-uniform vec3 uKs;
-uniform float uShininess;
+uniform vec3 uKd; // Couleur diffuse
+uniform vec3 uKs; // Couleur spéculaire
+uniform float uShininess; // Brillance
 uniform vec3 uLightPos_vs[nb_lights]; // Augmentez la taille du tableau selon le nombre de points de lumière supportés
 uniform vec3 uLightIntensity[nb_lights]; // Intensité de chaque lumière
 
 vec3 blinnPhong(vec3 lightPos_vs, vec3 lightIntensity)
 {
+    // Calcul des vecteurs nécessaires
     float d = distance(vPosition_vs, lightPos_vs);
+    vec3 Li = lightIntensity / d;
     vec3 wi = normalize(lightPos_vs - vPosition_vs);
-    vec3 Li = lightIntensity / (d * d);
     vec3 N = normalize(vNormal_vs);
-    vec3 H = normalize(wi + vec3(0, 0, 1)); // Vec3 H = (N + wi) / 2.0; (A changer)
+    vec3 H = normalize(wi + vec3(0, 0, 1));
 
-    return Li * (uKd * max(0.0, dot(N, wi)) + uKs * pow(max(0.0, dot(N, H)), uShininess));
+    // Vérification des produits scalaires
+    float cosTheta = dot(N, wi);
+    float cosAlpha = dot(H, N);
+    
+    // Calcul de la lumière diffuse et spéculaire
+    vec3 diffuse = uKd * max(0.0, cosTheta);
+    vec3 specular = uKs * pow(max(0.0, cosAlpha), uShininess);
+
+    return Li * (diffuse + specular); // Addition des composantes diffuse et spéculaire
 }
 
 void main()

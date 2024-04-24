@@ -1,8 +1,6 @@
 #include "Renderer/renderer.hpp"
 
-{
 void setup_view_projection(p6::Context& ctx, Camera& camera, glm::mat4& ProjMatrix, glm::mat4& ViewMatrix)
-void setup_view_projection(p6::Context& ctx, TrackballCamera& camera, glm::mat4& ProjMatrix, glm::mat4& ViewMatrix)
 {
     ProjMatrix = glm::perspective(
         glm::radians(70.f),
@@ -45,9 +43,8 @@ void finalize_rendering(const Mesh& mesh, const std::vector<Light>& point_light,
 
     set_uniform_variable("uText", 0);
 
-    set_uniform_variable("uKd", glm::vec3(0.95f));
-    set_uniform_variable("uKd", glm::vec3(0.95f));
-    set_uniform_variable("uKs", glm::vec3(0.95f));
+    set_uniform_variable("uKd", glm::vec3(0.95f)); // diffuse
+    set_uniform_variable("uKs", glm::vec3(0.95f)); // specular
 
     set_uniform_variable("uShininess", 100.f);
 
@@ -62,7 +59,7 @@ void finalize_rendering(const Mesh& mesh, const std::vector<Light>& point_light,
     mesh.render_mesh();
 }
 
-void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids, const std::vector<Light>& point_light) const
+void Renderer::render_boids(p6::Context& ctx, Camera& camera, const std::vector<Boid>& boids, const std::vector<Light>& point_light) const
 {
     _boids_mesh.shader.use();
 
@@ -75,28 +72,20 @@ void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std
         // get the view matrix
         glm::mat4 ViewMatrix = camera.get_view_matrix();
 
-void finalize_rendering(const Mesh& mesh, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
-{
-    // compute the normal matrix
-    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+        // move the boid to its position
+        glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), boid.get_position());
 
-    // compute the MVP matrix
-    glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;
+        // scale the boid
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(boid.get_size()));
 
-    // send the matrices to the shader
-    glUniform1i(mesh.uText, 0);
-    glUniformMatrix4fv(mesh.uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
-    glUniformMatrix4fv(mesh.uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
-    glUniformMatrix4fv(mesh.uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-
-    render_mesh(mesh);
-}
+        // rotate the boid to face the direction it is going
+        MVMatrix = glm::rotate(MVMatrix, boid.get_look_at_angle_and_axis().first, boid.get_look_at_angle_and_axis().second);
 
         finalize_rendering(_boids_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
     }
 }
 
-void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const Element& terrain, const std::vector<Light>& point_light) const
+void Renderer::render_terrain(p6::Context& ctx, Camera& camera, const Element& terrain, const std::vector<Light>& point_light) const
 {
     _terrain_mesh.shader.use();
 
@@ -113,7 +102,7 @@ void Renderer::render_terrain(p6::Context& ctx, TrackballCamera& camera, const E
     finalize_rendering(_terrain_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
 }
 
-void Renderer::render_point_light(p6::Context& ctx, TrackballCamera& camera, const std::vector<Light>& point_light) const
+void Renderer::render_point_light(p6::Context& ctx, Camera& camera, const std::vector<Light>& point_light) const
 {
     _point_light_mesh.shader.use();
 
@@ -131,64 +120,23 @@ void Renderer::render_point_light(p6::Context& ctx, TrackballCamera& camera, con
 
         finalize_rendering(_point_light_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
     }
-void Renderer::render_arpenteur(p6::Context& ctx, Camera& camera, float scale) const
-    MVMatrix = glm::scale(MVMatrix, glm::vec3(scale));
+}
 
-    // scale the arpenteur
-    glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), camera.get_position());
-    // move the arpenteur to its position
-    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
-
-
-
-    glm::mat4 ProjMatrix, ViewMatrix;
+void Renderer::render_arpenteur(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const
 {
     _arpenteur_mesh.shader.use();
 
+    glm::mat4 ProjMatrix, ViewMatrix;
+
+    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
+
+    // move the arpenteur to its position
+    glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), camera.get_position());
+
+    // scale the arpenteur
+    MVMatrix = glm::scale(MVMatrix, glm::vec3(scale));
+
     // rotate the arpenteur to face the direction of the camera
 
-    finalize_rendering(_arpenteur_mesh, ProjMatrix, ViewMatrix, MVMatrix);
-void Renderer::render_terrain(p6::Context& ctx, Camera& camera, const Terrain& terrain) const
-{
-    _terrain_mesh.shader.use();
-
-
-    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
-
-
-}
-    finalize_rendering(_terrain_mesh, ProjMatrix, ViewMatrix, MVMatrix);
-
-    // scale the terrain
-    MVMatrix = glm::scale(MVMatrix, terrain.scale);
-
-    glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), terrain.position);
-    // move the terrain to its position
-    glm::mat4 ProjMatrix, ViewMatrix;
-
-}
-        finalize_rendering(_boids_mesh, ProjMatrix, ViewMatrix, MVMatrix);
-    }
-        MVMatrix = glm::rotate(MVMatrix, boid.get_look_at_angle_and_axis().first, boid.get_look_at_angle_and_axis().second);
-
-
-        // rotate the boid to face the direction it is going
-        // scale the boid
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(boid.get_size()));
-
-        glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), boid.get_position());
-        // move the boid to its position
-
-        glm::mat4 ViewMatrix = camera.get_view_matrix();
-        // get the view matrix
-    {
-    for (auto const& boid : boids)
-
-    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
-
-    glm::mat4 ProjMatrix, ViewMatrix;
-
-    _boids_mesh.shader.use();
-{
-void Renderer::render_boids(p6::Context& ctx, Camera& camera, const std::vector<Boid>& boids) const
+    finalize_rendering(_arpenteur_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
 }

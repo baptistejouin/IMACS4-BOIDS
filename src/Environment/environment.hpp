@@ -21,11 +21,6 @@ struct Terrain {
     glm::vec3 scale{0.3f};
 };
 
-struct Terrain {
-    glm::vec3 position{0.f, -1.75f, 0.f};
-    glm::vec3 scale{0.3f};
-};
-
 struct EnvironmentParams {
     p6::Color          background_color;
     Element            terrain;
