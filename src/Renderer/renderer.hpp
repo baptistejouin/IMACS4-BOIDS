@@ -35,9 +35,4 @@ private:
         Geometry::sphere_vertices(1.0f, 10, 10),
         {"assets/shaders/3D.vs.glsl", "assets/shaders/normals.fs.glsl"}
     );
-    Mesh _terrain_mesh = Mesh(
-        "assets/models/terrain.bake.obj",
-        "assets/textures/terrain.bake.col.png",
-        {"assets/shaders/3D.vs.glsl", "assets/shaders/textures.fs.glsl"}
-    );
 };
