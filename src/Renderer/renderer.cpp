@@ -215,3 +215,22 @@ void Renderer::render_terrain(p6::Context& ctx, Camera& camera, const Terrain& t
 
     finalize_rendering(_terrain_mesh, ProjMatrix, ViewMatrix, MVMatrix);
 }
+
+void Renderer::render_arpenteur(p6::Context& ctx, Camera& camera, float scale) const
+{
+    _arpenteur_mesh.shader.use();
+
+    glm::mat4 ProjMatrix, ViewMatrix;
+
+    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
+
+    // move the arpenteur to its position
+    glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), camera.get_position());
+
+    // scale the arpenteur
+    MVMatrix = glm::scale(MVMatrix, glm::vec3(scale));
+
+    // rotate the arpenteur to face the direction of the camera
+
+    finalize_rendering(_arpenteur_mesh, ProjMatrix, ViewMatrix, MVMatrix);
+}

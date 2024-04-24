@@ -12,6 +12,7 @@ public:
     void      rotate_left(float degrees);
     void      rotate_up(float degrees);
     glm::mat4 get_view_matrix() const;
+    glm::vec3 get_position() const { return _position; }
 
 private:
     float     _distance;

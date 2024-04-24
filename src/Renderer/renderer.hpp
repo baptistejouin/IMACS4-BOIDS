@@ -42,6 +42,7 @@ public:
 
     void render_boids(p6::Context& ctx, Camera& camera, const std::vector<Boid>& boids) const;
     void render_terrain(p6::Context& ctx, Camera& camera, const Terrain& terrain) const;
+    void render_arpenteur(p6::Context& ctx, Camera& camera, float scale) const;
 
 private:
     Mesh _boids_mesh = Mesh(
@@ -52,6 +53,11 @@ private:
     Mesh _terrain_mesh = Mesh(
         "assets/models/terrain.bake.obj",
         "assets/textures/terrain.bake.col.png",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/textures.fs.glsl"}
+    );
+    Mesh _arpenteur_mesh = Mesh(
+        "assets/models/oiseauBake.obj",
+        "assets/textures/oiseauBake.jpg",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/textures.fs.glsl"}
     );
 };
