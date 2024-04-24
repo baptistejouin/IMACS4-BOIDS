@@ -2,13 +2,15 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include "Boids/boidsParams.hpp"
 #include "glm/fwd.hpp"
 
 class Camera {
 public:
     Camera() noexcept;
-    void      move_front(float delta);
-    void      move_left(float delta);
+    bool      cube_collision(float t, Bounds bounds) const;
+    void      move_front(float delta, Bounds bounds);
+    void      move_left(float delta, Bounds bounds);
     void      rotate_left(float degrees);
     void      rotate_up(float degrees);
     glm::mat4 get_view_matrix() const;

@@ -18,6 +18,7 @@ public:
     void gui();
 
     const std::vector<Boid>& get_boids() const { return _boids; }
+    const Bounds&            get_bounds() const { return _params.bounds; }
 
 private:
     std::vector<Boid> _boids;

@@ -20,7 +20,7 @@ void View::init(p6::Context& ctx)
     glEnable(GL_DEPTH_TEST);
 }
 
-void View::_check_events(p6::Context& ctx)
+void View::_check_events(p6::Context& ctx, Bounds bounds)
 {
     if (ctx.key_is_pressed(GLFW_KEY_ESCAPE))
     {
@@ -28,19 +28,19 @@ void View::_check_events(p6::Context& ctx)
     }
     if (ctx.key_is_pressed(GLFW_KEY_W))
     {
-        _camera.move_front(0.01f);
+        _camera.move_front(0.01f, bounds);
     }
     if (ctx.key_is_pressed(GLFW_KEY_S))
     {
-        _camera.move_front(-0.01f);
+        _camera.move_front(-0.01f, bounds);
     }
     if (ctx.key_is_pressed(GLFW_KEY_A))
     {
-        _camera.move_left(0.01f);
+        _camera.move_left(0.01f, bounds);
     }
     if (ctx.key_is_pressed(GLFW_KEY_D))
     {
-        _camera.move_left(-0.01f);
+        _camera.move_left(-0.01f, bounds);
     }
 }
 
@@ -55,5 +55,5 @@ void View::update(p6::Context& ctx)
     _renderer.render_cube(ctx, _camera, 1.2f, _environment.get_points_light());
     _renderer.render_point_light(ctx, _camera, _environment.get_points_light());
     _boids.update(ctx.delta_time());
-    _check_events(ctx);
+    _check_events(ctx, _boids.get_bounds());
 }
