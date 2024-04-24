@@ -73,17 +73,22 @@ void Renderer::render_boids(p6::Context& ctx, TrackballCamera& camera, const std
         // get the view matrix
         glm::mat4 ViewMatrix = camera.get_view_matrix();
 
-        // move the boid to its position
-        glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), boid.get_position());
+void finalize_rendering(const Mesh& mesh, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
+{
+    // compute the normal matrix
+    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
-        // scale the boid
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(boid.get_size()));
+    // compute the MVP matrix
+    glm::mat4 MVPMatrix = ProjMatrix * ViewMatrix * MVMatrix;
 
-        // rotate the boid to face the direction it is going
-        MVMatrix = glm::rotate(MVMatrix, boid.get_look_at_angle_and_axis().first, boid.get_look_at_angle_and_axis().second);
+    // send the matrices to the shader
+    glUniform1i(mesh.uText, 0);
+    glUniformMatrix4fv(mesh.uMVPMatrixLocation, 1, GL_FALSE, glm::value_ptr(MVPMatrix));
+    glUniformMatrix4fv(mesh.uMVMatrixLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
+    glUniformMatrix4fv(mesh.uNormalMatrixLocation, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-        // by default the model is facing to the top, so we need to rotate it
-        MVMatrix = glm::rotate(MVMatrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+    render_mesh(mesh);
+}
 
         finalize_rendering(_boids_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
     }
