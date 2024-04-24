@@ -1,9 +1,9 @@
 #include "Renderer/renderer.hpp"
 
-void setup_mesh(const Mesh& mesh)
+void Mesh::setup_mesh()
 {
-    mesh.vbo.bind();
-    mesh.vao.bind();
+    vbo.bind();
+    vao.bind();
 
     static constexpr GLuint VERTEX_ATTR_POSITION = 0;
     glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
@@ -17,24 +17,29 @@ void setup_mesh(const Mesh& mesh)
     glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
     glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), reinterpret_cast<const GLvoid*>(offsetof(ShapeVertex, texCoords)));
 
-    mesh.vbo.fill(mesh.vertices);
+    vbo.fill(vertices);
 
-    mesh.vbo.unbind();
-    mesh.vao.unbind();
+    vbo.unbind();
+    vao.unbind();
 }
 
-void render_mesh(const Mesh& mesh)
+void Mesh::render_mesh() const
 {
-    mesh.vao.bind();
+    vao.bind();
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mesh.texture_id);
+    // if mesh has a texture
+    if (texture_id != 0)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+    }
 
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(mesh.vertices.size()));
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    if (texture_id != 0)
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-    mesh.vao.unbind();
+    vao.unbind();
 }
 
 void setup_view_projection(p6::Context& ctx, TrackballCamera& camera, glm::mat4& ProjMatrix, glm::mat4& ViewMatrix)
@@ -47,6 +52,11 @@ void setup_view_projection(p6::Context& ctx, TrackballCamera& camera, glm::mat4&
     );
 
     ViewMatrix = camera.get_view_matrix();
+}
+
+void Mesh::add_uniform_variable(const std::string& name)
+{
+    uniformVariables[name] = glGetUniformLocation(shader.id(), name.c_str());
 }
 
 void finalize_rendering(const Mesh& mesh, const std::vector<Element>& point_light, const glm::mat4& ProjMatrix, const glm::mat4& ViewMatrix, const glm::mat4& MVMatrix)
@@ -66,64 +76,60 @@ void finalize_rendering(const Mesh& mesh, const std::vector<Element>& point_ligh
     glUniformMatrix4fv(mesh.uniformVariables.at("uMVMatrix"), 1, GL_FALSE, glm::value_ptr(ViewMatrix * MVMatrix));
     glUniformMatrix4fv(mesh.uniformVariables.at("uNormalMatrix"), 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-    // send the texture properties to the shader
-    glUniform1i(mesh.uniformVariables.at("uText"), 0);
+    auto set_uniform_variable = [&](const std::string& uniformName, auto value) {
+        if (auto iter = mesh.uniformVariables.find(uniformName); iter != mesh.uniformVariables.end())
+        {
+            if constexpr (std::is_same_v<decltype(value), int>)
+                glUniform1i(iter->second, value);
+            else if constexpr (std::is_same_v<decltype(value), float>)
+                glUniform1f(iter->second, value);
+            else if constexpr (std::is_same_v<decltype(value), glm::vec3>)
+                glUniform3fv(iter->second, 1, glm::value_ptr(value));
+        }
+    };
 
-    // send the light properties to the shader
-    glUniform3fv(mesh.uniformVariables.at("uKd"), 1, glm::value_ptr(glm::vec3(0.95f, 0.95f, 0.95f)));
-    glUniform3fv(mesh.uniformVariables.at("uKs"), 1, glm::value_ptr(glm::vec3(0.95f, 0.95f, 0.95f)));
-    glUniform1f(mesh.uniformVariables.at("uShininess"), 100.f);
+    set_uniform_variable("uText", 0);
 
-    // TODO only one light is supported for now
-    glUniform3fv(mesh.uniformVariables.at("uLightPos_vs"), 1, glm::value_ptr(lightPos_vs));
-    glUniform3fv(mesh.uniformVariables.at("uLightIntensity"), 1, glm::value_ptr(glm::vec3(1.f)));
+    set_uniform_variable("uKd", glm::vec3(0.95f));
+    set_uniform_variable("uKd", glm::vec3(0.95f));
+    set_uniform_variable("uKs", glm::vec3(0.95f));
 
-    render_mesh(mesh);
-}
+    set_uniform_variable("uShininess", 100.f);
 
-void add_uniform_variable(Mesh& mesh, const std::string& uniform_name)
-{
-    mesh.uniformVariables[uniform_name] = glGetUniformLocation(mesh.shader.id(), uniform_name.c_str());
+    set_uniform_variable("uLightPos_vs", lightPos_vs);
+    set_uniform_variable("uLightIntensity", glm::vec3(1.f));
+
+    mesh.render_mesh();
 }
 
 Mesh::Mesh(const std::filesystem::path& obj_path, const std::filesystem::path& texture_path, const ShaderPaths& shader_paths)
     : shader(p6::load_shader(shader_paths.vertex_shader_path, shader_paths.fragment_shader_path)), vertices(Renderer::load_model(obj_path)), texture_id(Renderer::load_texture(texture_path))
 {
-    add_uniform_variable(*this, "uMVPMatrix");
-    add_uniform_variable(*this, "uMVMatrix");
-    add_uniform_variable(*this, "uNormalMatrix");
+    add_uniform_variable("uMVPMatrix");
+    add_uniform_variable("uMVMatrix");
+    add_uniform_variable("uNormalMatrix");
 
     // add the texture uniform
-    add_uniform_variable(*this, "uText");
+    add_uniform_variable("uText");
 
     // add the light uniform
-    add_uniform_variable(*this, "uKd");
-    add_uniform_variable(*this, "uKs");
-    add_uniform_variable(*this, "uShininess");
-    add_uniform_variable(*this, "uLightPos_vs");
-    add_uniform_variable(*this, "uLightIntensity");
+    add_uniform_variable("uKd");
+    add_uniform_variable("uKs");
+    add_uniform_variable("uShininess");
+    add_uniform_variable("uLightPos_vs");
+    add_uniform_variable("uLightIntensity");
 
-    setup_mesh(*this);
+    setup_mesh();
 }
 
 Mesh::Mesh(const std::vector<ShapeVertex>& vertices, const ShaderPaths& shader_paths)
     : shader(p6::load_shader(shader_paths.vertex_shader_path, shader_paths.fragment_shader_path)), vertices(vertices), texture_id(0)
 {
-    add_uniform_variable(*this, "uMVPMatrix");
-    add_uniform_variable(*this, "uMVMatrix");
-    add_uniform_variable(*this, "uNormalMatrix");
+    add_uniform_variable("uMVPMatrix");
+    add_uniform_variable("uMVMatrix");
+    add_uniform_variable("uNormalMatrix");
 
-    // add the texture uniform
-    add_uniform_variable(*this, "uText");
-
-    // add the light uniform
-    add_uniform_variable(*this, "uKd");
-    add_uniform_variable(*this, "uKs");
-    add_uniform_variable(*this, "uShininess");
-    add_uniform_variable(*this, "uLightPos_vs");
-    add_uniform_variable(*this, "uLightIntensity");
-
-    setup_mesh(*this);
+    setup_mesh();
 }
 
 GLuint Renderer::load_texture(const std::filesystem::path& texture_path)

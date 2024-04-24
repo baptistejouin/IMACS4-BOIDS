@@ -23,6 +23,7 @@ struct Mesh {
     std::vector<ShapeVertex>     vertices;
     GLuint                       texture_id;
 
+public:
     // This constructor is used for meshes loaded from an obj file with a texture
     Mesh(
         const std::filesystem::path& obj_path,
@@ -35,6 +36,12 @@ struct Mesh {
         const std::vector<ShapeVertex>& vertices,
         const ShaderPaths&              shader_paths
     );
+
+    void add_uniform_variable(const std::string& name);
+    void render_mesh() const;
+
+private:
+    void setup_mesh();
 };
 
 class Renderer {
