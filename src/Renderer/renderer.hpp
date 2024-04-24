@@ -17,6 +17,7 @@ public:
     void render_terrain(p6::Context& ctx, Camera& camera, const Element& terrain, const std::vector<Light>& point_light) const;
     void render_point_light(p6::Context& ctx, Camera& camera, const std::vector<Light>& point_light) const;
     void render_arpenteur(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
+    void render_flowers(p6::Context& ctx, Camera& camera, const std::vector<Element>& flowers, const std::vector<Light>& point_light) const;
 
 private:
     // fs : point_light, textures, normals
@@ -29,6 +30,11 @@ private:
     Mesh _terrain_mesh = Mesh(
         "assets/models/terrain.bake.obj",
         "assets/textures/terrain.bake.col.png",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _flower_01_mesh = Mesh(
+        "assets/models/flower_white.obj",
+        "assets/textures/flowers.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
     Mesh _arpenteur_mesh = Mesh(

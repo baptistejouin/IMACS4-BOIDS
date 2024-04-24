@@ -50,6 +50,7 @@ void View::update(p6::Context& ctx)
     _environment.draw(ctx);
     _renderer.render_boids(ctx, _camera, _boids.get_boids(), _environment.get_points_light());
     _renderer.render_terrain(ctx, _camera, _environment.get_terrain(), _environment.get_points_light());
+    _renderer.render_flowers(ctx, _camera, _environment.get_flowers(), _environment.get_points_light());
     _renderer.render_arpenteur(ctx, _camera, .03f, _environment.get_points_light());
     _renderer.render_point_light(ctx, _camera, _environment.get_points_light());
     _boids.update(ctx.delta_time());

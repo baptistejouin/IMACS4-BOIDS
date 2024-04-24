@@ -17,6 +17,13 @@ EnvironmentParams::EnvironmentParams()
     };
 
     point_light = {light_01, light_02};
+
+    const Element flower = {
+        .position = {.5f, -1.25f, .5f},
+        .scale    = glm::vec3{.05f}
+    };
+
+    flowers = {flower};
 }
 
 Environment::Environment(const EnvironmentParams& params)

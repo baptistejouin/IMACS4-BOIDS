@@ -102,6 +102,26 @@ void Renderer::render_terrain(p6::Context& ctx, Camera& camera, const Element& t
     finalize_rendering(_terrain_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
 }
 
+void Renderer::render_flowers(p6::Context& ctx, Camera& camera, const std::vector<Element>& flowers, const std::vector<Light>& point_light) const
+{
+    _flower_01_mesh.shader.use();
+
+    glm::mat4 ProjMatrix, ViewMatrix;
+
+    setup_view_projection(ctx, camera, ProjMatrix, ViewMatrix);
+
+    for (auto const& flower : flowers)
+    {
+        // move the flower to its position
+        glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), flower.position);
+
+        // scale the flower
+        MVMatrix = glm::scale(MVMatrix, flower.scale);
+
+        finalize_rendering(_flower_01_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+    }
+}
+
 void Renderer::render_point_light(p6::Context& ctx, Camera& camera, const std::vector<Light>& point_light) const
 {
     _point_light_mesh.shader.use();

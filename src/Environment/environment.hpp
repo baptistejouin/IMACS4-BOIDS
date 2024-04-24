@@ -22,9 +22,10 @@ struct Terrain {
 };
 
 struct EnvironmentParams {
-    p6::Color          background_color;
-    Element            terrain;
-    std::vector<Light> point_light;
+    p6::Color            background_color;
+    Element              terrain;
+    std::vector<Light>   point_light;
+    std::vector<Element> flowers;
 
     EnvironmentParams();
 };
@@ -36,8 +37,9 @@ public:
     void draw(p6::Context& ctx) const;
     void gui();
 
-    const Element&            get_terrain() const { return _params.terrain; }
-    const std::vector<Light>& get_points_light() const { return _params.point_light; }
+    const Element&              get_terrain() const { return _params.terrain; }
+    const std::vector<Light>&   get_points_light() const { return _params.point_light; }
+    const std::vector<Element>& get_flowers() const { return _params.flowers; }
 
 private:
     EnvironmentParams _params;
