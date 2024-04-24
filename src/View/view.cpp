@@ -7,6 +7,7 @@ void View::init(p6::Context& ctx)
     ctx.imgui = [&]() {
         _environment.gui();
         _boids.gui();
+        _renderer.gui();
     };
 
     ctx.mouse_dragged = [this](p6::MouseDrag const& drag) {

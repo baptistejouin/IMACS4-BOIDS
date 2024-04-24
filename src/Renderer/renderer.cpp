@@ -1,4 +1,5 @@
 #include "Renderer/renderer.hpp"
+#include <imgui.h>
 
 void setup_view_projection(p6::Context& ctx, Camera& camera, glm::mat4& ProjMatrix, glm::mat4& ViewMatrix)
 {
@@ -139,4 +140,25 @@ void Renderer::render_arpenteur(p6::Context& ctx, Camera& camera, float scale, c
     // rotate the arpenteur to face the direction of the camera
 
     finalize_rendering(_arpenteur_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+}
+
+void Renderer::gui()
+{
+    ImGui::Begin("Renderer");
+
+    if (ImGui::BeginCombo("Level Of Detail", _LOD)) // The second parameter is the label previewed before opening the combo.
+    {
+        if (ImGui::Selectable("High"))
+        {
+            _LOD = "High";
+            _boids_mesh.change_mesh("assets/models/avion-HQ.obj");
+        }
+        if (ImGui::Selectable("Low"))
+        {
+            _LOD = "Low";
+            _boids_mesh.change_mesh("assets/models/avion-LQ.obj");
+        }
+        ImGui::EndCombo();
+    }
+    ImGui::End();
 }

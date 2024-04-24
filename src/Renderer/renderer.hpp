@@ -18,11 +18,15 @@ public:
     void render_point_light(p6::Context& ctx, Camera& camera, const std::vector<Light>& point_light) const;
     void render_arpenteur(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
 
+    void gui();
+
 private:
+    const char* _LOD = "High";
+
     // fs : point_light, textures, normals
 
     Mesh _boids_mesh = Mesh(
-        "assets/models/avion-LQ.obj",
+        "assets/models/avion-HQ.obj",
         "assets/textures/papier.jpg",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
