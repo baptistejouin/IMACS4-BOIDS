@@ -110,11 +110,6 @@ void Boids::update(float delta_time)
     }
 }
 
-const std::vector<Boid>& Boids::get_boids()
-{
-    return _boids;
-}
-
 void Boids::reset()
 {
     for (auto& boid : _boids)

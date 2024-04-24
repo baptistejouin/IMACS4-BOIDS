@@ -6,6 +6,7 @@
 #include <glm/gtx/transform.hpp>
 #include "Boids/boid.hpp"
 #include "Camera/trackball.hpp"
+#include "Environment/environment.hpp"
 #include "Utils/Geometry.hpp"
 #include "Utils/VAO.hpp"
 #include "Utils/VBO.hpp"
@@ -40,11 +41,17 @@ public:
     static std::vector<ShapeVertex> load_model(const std::filesystem::path& obj_path);
 
     void render_boids(p6::Context& ctx, TrackballCamera& camera, const std::vector<Boid>& boids) const;
+    void render_terrain(p6::Context& ctx, TrackballCamera& camera, const Terrain& terrain) const;
 
 private:
     Mesh _boids_mesh = Mesh(
         "assets/models/oiseauBake.obj",
         "assets/textures/oiseauBake.jpg",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/textures.fs.glsl"}
+    );
+    Mesh _terrain_mesh = Mesh(
+        "assets/models/terrain.bake.obj",
+        "assets/textures/terrain.bake.col.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/textures.fs.glsl"}
     );
 };

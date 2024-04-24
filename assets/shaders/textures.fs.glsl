@@ -15,5 +15,6 @@ void main()
 {
     vec4 texColor = texture(uText, vTexCoords);
 
+    // use normal for shading
     fragColor = texColor;
 }
