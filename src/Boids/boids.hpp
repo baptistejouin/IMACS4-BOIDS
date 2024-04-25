@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "Boids/boid.hpp"
+#include "Utils/Probability.hpp"
 #include "boidsParams.hpp"
 
 float map_to_max_speed(float value, float max_speed);

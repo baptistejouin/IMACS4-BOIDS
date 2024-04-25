@@ -2,11 +2,6 @@
 #include "Utils/Probability.hpp"
 #include "glm/fwd.hpp"
 
-glm::vec3 get_random_velocity()
-{
-    return glm::vec3{p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f)};
-}
-
 Boid::Boid(glm::vec3 position, glm::vec3 velocity, float size)
     : _position(position)
     , _velocity(velocity)
@@ -15,8 +10,8 @@ Boid::Boid(glm::vec3 position, glm::vec3 velocity, float size)
 }
 
 Boid::Boid()
-    : _position(glm::vec3{Probability::math_law_01()})
-    , _velocity(glm::vec3{get_random_velocity()})
+    : _position(glm::vec3{Probability::get_random_position()})
+    , _velocity(glm::vec3{Probability::get_random_velocity()})
     , _size(0.03f)
 {}
 

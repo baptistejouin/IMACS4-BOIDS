@@ -8,7 +8,12 @@ long double rand_0_1()
     return distrib(gen);
 }
 
-glm::vec3 Probability::math_law_01()
+glm::vec3 Probability::get_random_velocity()
+{
+    return glm::vec3{p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f)};
+}
+
+glm::vec3 Probability::get_random_position()
 {
     // TODO(eliott)
     return {rand_0_1() * 1.6f - 0.8f, rand_0_1() * 1.6f - 0.8f, rand_0_1() * 1.6f - 0.8f};
