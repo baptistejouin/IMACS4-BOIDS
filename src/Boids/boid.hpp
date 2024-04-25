@@ -24,3 +24,6 @@ private:
     glm::vec3 _velocity;
     float     _size;
 };
+
+glm::vec3 get_random_position();
+glm::vec3 get_random_velocity();

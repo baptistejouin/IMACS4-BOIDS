@@ -11,7 +11,7 @@ void  prevent_bounds_exit(Boid& boid, const BoidsParams& params);
 
 class Boids {
 public:
-    explicit Boids(int nbBoids = 500);
+    explicit Boids(int nbBoids = 300);
 
     void update(float delta_time);
     void reset();

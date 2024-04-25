@@ -14,8 +14,8 @@ struct BoidsParams {
     float  centering_factor{.001f};
     float  avoid_factor{.9f};
     float  matching_factor{.02f};
-    float  max_speed{.8f};
-    float  min_speed{.5f};
+    float  max_speed{.5f};
+    float  min_speed{.3f};
     Bounds bounds{{-1.45f, 1.45f}, {-1.0f, 1.45f}, {-1.45f, 1.45f}};
     float  bounds_force_range{0.3f};
 };
