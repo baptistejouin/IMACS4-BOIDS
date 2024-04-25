@@ -17,6 +17,8 @@ public:
     void      zoom(float delta, float factor);
     glm::mat4 get_view_matrix() const;
     glm::vec3 get_position() const { return _position; }
+    glm::vec3 get_front() const { return _front; }
+    float     get_distance() const { return _distance; }
 
 private:
     float     _distance;
