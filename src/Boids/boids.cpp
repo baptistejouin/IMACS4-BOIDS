@@ -184,7 +184,8 @@ void Boids::reset()
 {
     for (auto& boid : _boids)
     {
-        boid.set_position({0.f, 0.f, 0.f});
+        boid.set_position(get_random_position());
+        boid.set_velocity(get_random_velocity());
     }
 }
 

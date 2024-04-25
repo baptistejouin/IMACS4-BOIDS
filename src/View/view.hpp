@@ -14,7 +14,7 @@ public:
     void update(p6::Context& ctx);
 
 private:
-    void        _check_events(p6::Context& ctx);
+    void        _check_events(p6::Context& ctx, Bounds bounds);
     Environment _environment;
     Boids       _boids;
     Camera      _camera;

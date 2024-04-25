@@ -110,6 +110,7 @@ Mesh::Mesh(const std::filesystem::path& obj_path, const std::filesystem::path& t
 
     add_light_uniforms(0);
     add_light_uniforms(1);
+    add_light_uniforms(2);
 
     setup_mesh();
 }

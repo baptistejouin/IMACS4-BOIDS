@@ -11,13 +11,14 @@ void  prevent_bounds_exit(Boid& boid, const BoidsParams& params);
 
 class Boids {
 public:
-    explicit Boids(int nbBoids = 50);
+    explicit Boids(int nbBoids = 300);
 
     void update(float delta_time);
     void reset();
     void gui();
 
     const std::vector<Boid>& get_boids() const { return _boids; }
+    const Bounds&            get_bounds() const { return _params.bounds; }
 
 private:
     std::vector<Boid> _boids;

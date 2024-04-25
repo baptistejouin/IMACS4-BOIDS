@@ -7,7 +7,7 @@ in vec2 vTexCoords;
 
 out vec4 fragColor;
 
-const int nb_lights = 2; // Nombre de points de lumière supportés
+const int nb_lights = 3; // Nombre de points de lumière supportés
 
 //uniforms
 uniform sampler2D uText;

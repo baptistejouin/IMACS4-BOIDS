@@ -8,19 +8,62 @@ Camera::Camera() noexcept
     compute_direction_vectors();
 }
 
-void Camera::move_front(float t)
+bool Camera::cube_collision(glm::vec3 next_position, float t, Bounds bounds) const
 {
-    _position += t * _front;
+    if (next_position.x <= bounds.x[0] + t)
+    {
+        return true;
+    }
+
+    if (next_position.x >= bounds.x[1] - t)
+    {
+        return true;
+    }
+
+    if (next_position.y <= bounds.y[0] + t - 0.1f)
+    {
+        return true;
+    }
+
+    if (next_position.y >= bounds.y[1] - t - 0.1f)
+    {
+        return true;
+    }
+
+    if (next_position.z <= bounds.z[0] + t)
+    {
+        return true;
+    }
+
+    if (next_position.z >= bounds.z[1] - t)
+    {
+        return true;
+    }
+    return false;
 }
 
-void Camera::move_left(float t)
+void Camera::move_front(float t, Bounds bounds)
 {
-    _position += t * _left;
+    if (!cube_collision(_position + t * _front, t, bounds))
+    {
+        _position += t * _front;
+    }
 }
 
-void Camera::move_up(float t)
+void Camera::move_left(float t, Bounds bounds)
 {
-    _position += t * _up;
+    if (!cube_collision(_position + t * _left, t, bounds))
+    {
+        _position += t * _left;
+    }
+}
+
+void Camera::move_up(float t, Bounds bounds)
+{
+    if (!cube_collision(_position + t * glm::vec3(0.0f, 1.0f, 0.0f), t, bounds))
+    {
+        _position += t * glm::vec3(0.0f, 1.0f, 0.0f);
+    }
 }
 
 void Camera::compute_direction_vectors()
@@ -48,6 +91,12 @@ void Camera::rotate_up(float degrees)
 {
     _theta += glm::radians(degrees);
     compute_direction_vectors();
+}
+
+void Camera::zoom(float delta, float factor)
+{
+    if (_distance + delta * factor < 5.0f && _distance + delta * factor > 0.15f)
+        _distance += delta * factor;
 }
 
 glm::mat4 Camera::get_view_matrix() const

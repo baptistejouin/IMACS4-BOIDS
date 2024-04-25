@@ -53,6 +53,6 @@ private:
     );
     Mesh _point_light_mesh = Mesh(
         Geometry::sphere_vertices(1.0f, 10, 10),
-        {"assets/shaders/3D.vs.glsl", "assets/shaders/normals.fs.glsl"}
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/white.fs.glsl"}
     );
 };
