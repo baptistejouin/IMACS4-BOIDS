@@ -17,8 +17,8 @@ public:
     void render_terrain(p6::Context& ctx, Camera& camera, const Element& terrain, const std::vector<Light>& point_light) const;
     void render_point_light(p6::Context& ctx, Camera& camera, const std::vector<Light>& point_light) const;
     void render_arpenteur(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
+    void render_flowers(p6::Context& ctx, Camera& camera, const std::vector<Element>& flowers, const std::vector<Light>& point_light) const;
     void render_cube(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
-
     void gui();
 
 private:
@@ -46,8 +46,13 @@ private:
         "assets/textures/log.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
+    Mesh _flower_01_mesh = Mesh(
+        "assets/models/flower_blue.obj",
+        "assets/textures/flowers.png",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
     Mesh _point_light_mesh = Mesh(
         Geometry::sphere_vertices(1.0f, 10, 10),
-        {"assets/shaders/3D.vs.glsl", "assets/shaders/normals.fs.glsl"}
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/white.fs.glsl"}
     );
 };

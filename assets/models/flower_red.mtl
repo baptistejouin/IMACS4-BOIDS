@@ -1,12 +1,12 @@
-# Blender 3.6.2 MTL File: 'ballons.blend'
+# Blender 3.6.2 MTL File: 'flower.blend'
 # www.blender.org
 
-newmtl Material.005
-Ns 250.000000
+newmtl Base_Material
+Ns 70.596771
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd texture.png
+map_Kd CT_Pallete.png
