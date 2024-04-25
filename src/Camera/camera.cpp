@@ -103,7 +103,6 @@ glm::mat4 Camera::get_view_matrix() const
 {
     glm::mat4 view = glm::mat4(1.0f);
 
-    view = glm::translate(view, {0.0f, 0.0f, -_distance});
     view = glm::lookAt(_position - (_front * _distance), _position + _front, _up);
 
     return view;

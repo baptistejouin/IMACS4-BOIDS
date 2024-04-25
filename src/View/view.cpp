@@ -66,7 +66,7 @@ void View::_check_events(p6::Context& ctx, Bounds bounds)
 void View::update(p6::Context& ctx)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    _environment.update_fixed_light(_camera);
     _environment.draw(ctx);
     _renderer.render_boids(ctx, _camera, _boids.get_boids(), _environment.get_points_light());
     _renderer.render_terrain(ctx, _camera, _environment.get_terrain(), _environment.get_points_light());

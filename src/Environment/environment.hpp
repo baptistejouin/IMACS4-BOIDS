@@ -4,6 +4,7 @@
 #include <p6/p6.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include "Camera/camera.hpp"
 
 struct Element {
     glm::vec3 position{0.f};
@@ -30,6 +31,7 @@ class Environment {
 public:
     explicit Environment(const EnvironmentParams& params = {});
 
+    void update_fixed_light(Camera& camera);
     void draw(p6::Context& ctx) const;
     void gui();
 

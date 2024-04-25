@@ -49,8 +49,8 @@ EnvironmentParams::EnvironmentParams()
     };
 
     const Light light_03 = {
-        .index     = 99, // special index : the light moves with the camera
-        .position  = {.0f, -.1f, .0f},
+        .index     = 2,
+        .position  = {.0f, -.1f, .0f}, // will be updated in update_fixed_light
         .intensity = glm::vec3{.5f}
     };
 
@@ -77,6 +77,11 @@ EnvironmentParams::EnvironmentParams()
     // };
 
     flowers = randomFlowers(100);
+}
+
+void Environment::update_fixed_light(Camera& camera)
+{
+    _params.point_light[2].position = camera.get_position() + glm::vec3{0.f, -0.1f, 0.f};
 }
 
 Environment::Environment(const EnvironmentParams& params)
