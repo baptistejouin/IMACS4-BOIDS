@@ -114,7 +114,7 @@ void Renderer::render_terrain(p6::Context& ctx, Camera& camera, const Element& t
 
 void Renderer::render_flowers(p6::Context& ctx, Camera& camera, const std::vector<Element>& flowers, const std::vector<Light>& point_light) const
 {
-    _flower_01_mesh.shader.use();
+    _flower_mesh.shader.use();
 
     glm::mat4 ProjMatrix, ViewMatrix;
 
@@ -125,10 +125,16 @@ void Renderer::render_flowers(p6::Context& ctx, Camera& camera, const std::vecto
         // move the flower to its position
         glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), flower.position);
 
+        // Limiter la plage de rotation entre -pi/2 et pi/2 radians
+        float maxYRotation = glm::radians(90.0f); // Convertir 90 degrés en radians
+
+        // Maintenant appliquer la rotation
+        MVMatrix = glm::rotate(MVMatrix, glm::clamp(flower.rotation.y, -maxYRotation, maxYRotation), glm::vec3(0.f, 1.f, 0.f));
+
         // scale the flower
         MVMatrix = glm::scale(MVMatrix, flower.scale);
 
-        finalize_rendering(_flower_01_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        finalize_rendering(_flower_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
     }
 }
 
@@ -216,19 +222,19 @@ void Renderer::gui()
     {
         if (ImGui::Selectable("Blue"))
         {
-            _flower_01_mesh.change_mesh("assets/models/flower_blue.obj");
+            _flower_mesh.change_mesh("assets/models/flower_blue.obj");
         }
         if (ImGui::Selectable("Red"))
         {
-            _flower_01_mesh.change_mesh("assets/models/flower_red.obj");
+            _flower_mesh.change_mesh("assets/models/flower_red.obj");
         }
         if (ImGui::Selectable("Yellow"))
         {
-            _flower_01_mesh.change_mesh("assets/models/flower_yellow.obj");
+            _flower_mesh.change_mesh("assets/models/flower_yellow.obj");
         }
         if (ImGui::Selectable("White"))
         {
-            _flower_01_mesh.change_mesh("assets/models/flower_white.obj");
+            _flower_mesh.change_mesh("assets/models/flower_white.obj");
         }
         ImGui::EndCombo();
     }

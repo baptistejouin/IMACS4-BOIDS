@@ -22,6 +22,10 @@ vec3 blinnPhong(vec3 lightPos_vs, vec3 lightIntensity)
     // Calcul des vecteurs nécessaires
     float d = distance(vPosition_vs, lightPos_vs);
     vec3 Li = lightIntensity / d;
+
+    // clamp Li between 0 and 1, to avoid infinite values (burning effect)
+    Li = clamp(Li, 0.0, 1.0);
+
     vec3 wi = normalize(lightPos_vs - vPosition_vs);
     vec3 N = normalize(vNormal_vs);
     vec3 H = normalize(wi + vec3(0, 0, 1));

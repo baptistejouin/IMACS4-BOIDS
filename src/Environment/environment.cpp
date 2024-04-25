@@ -4,8 +4,8 @@
 glm::vec3 randomPointOnSurface()
 {
     // Génération aléatoire des coordonnées dans le carré
-    float x = p6::random::number(-1.45f, .40f);
-    float z = p6::random::number(-1.25f, .6f);
+    float x = p6::random::number(-1.0f, .5f);
+    float z = p6::random::number(-.5f, 1.f);
 
     // La riviere est au centre de la map,
     // un bord 0.406678 -1.012720 0.210362
@@ -26,6 +26,7 @@ std::vector<Element> randomFlowers(int n)
         Element flower;
         flower.position = randomPointOnSurface();
         flower.scale    = p6::random::number(0.01f, 0.05f) * glm::vec3{1.f};
+        flower.rotation = glm::vec3{0.f, p6::random::number(0.f, 360.f), 0.f};
         flowers.push_back(flower);
     }
     return flowers;
@@ -50,7 +51,7 @@ EnvironmentParams::EnvironmentParams()
     const Light light_03 = {
         .index     = 99, // special index : the light moves with the camera
         .position  = {.0f, -.1f, .0f},
-        .intensity = glm::vec3{.25f}
+        .intensity = glm::vec3{.5f}
     };
 
     point_light = {light_01, light_02, light_03};

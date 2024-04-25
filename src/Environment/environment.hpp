@@ -6,19 +6,15 @@
 #include <vector>
 
 struct Element {
-    glm::vec3 position;
-    glm::vec3 scale;
+    glm::vec3 position{0.f};
+    glm::vec3 scale{1.f};
+    glm::vec3 rotation{0.f};
 };
 
 struct Light {
     int       index;
-    glm::vec3 position;
-    glm::vec3 intensity;
-};
-
-struct Terrain {
-    glm::vec3 position;
-    glm::vec3 scale;
+    glm::vec3 position{0.f};
+    glm::vec3 intensity{1.f};
 };
 
 struct EnvironmentParams {
