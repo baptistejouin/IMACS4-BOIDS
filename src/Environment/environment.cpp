@@ -32,7 +32,7 @@ std::vector<Element> randomFlowers(int n)
 }
 
 EnvironmentParams::EnvironmentParams()
-    : background_color{0.03f, 0.15f, 0.22f}
+    : background_color{0.035f, 0.105f, 0.141f}
     , terrain{{0.f, -1.75f, 0.f}, glm::vec3{0.4f}}
 {
     const Light light_01 = {
