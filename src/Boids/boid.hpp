@@ -2,6 +2,7 @@
 
 #include <p6/p6.h>
 #include <glm/glm.hpp>
+#include "Utils/Probability.hpp"
 #include "glm/fwd.hpp"
 
 class Boid {
