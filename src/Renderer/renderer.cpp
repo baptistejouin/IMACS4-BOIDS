@@ -51,7 +51,16 @@ void finalize_rendering(const Mesh& mesh, const std::vector<Light>& point_light,
 
     for (size_t i = 0; i < point_light.size(); ++i)
     {
-        const glm::vec3 light_position = ViewMatrix * glm::vec4(point_light[i].position, 1.f);
+        auto light_position = glm::vec3(0.f);
+
+        if (point_light[i].index != 99)
+        {
+            light_position = ViewMatrix * glm::vec4(point_light[i].position, 1.f);
+        }
+        else
+        {
+            light_position = point_light[i].position;
+        }
 
         set_uniform_variable("uLightPos_vs[" + std::to_string(i) + "]", light_position);
         set_uniform_variable("uLightIntensity[" + std::to_string(i) + "]", point_light[i].intensity);
@@ -116,8 +125,13 @@ void Renderer::render_point_light(p6::Context& ctx, Camera& camera, const std::v
         // move the light to its position
         glm::mat4 MVMatrix = glm::translate(glm::mat4(1.f), light.position);
 
+        if (light.index == 99)
+        {
+            MVMatrix = glm::translate(MVMatrix, camera.get_position());
+        }
+
         // scale the light
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.1f));
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.02f));
 
         finalize_rendering(_point_light_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
     }

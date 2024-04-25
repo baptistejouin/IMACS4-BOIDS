@@ -10,32 +10,32 @@ Camera::Camera() noexcept
 
 bool Camera::cube_collision(glm::vec3 next_position, float t, Bounds bounds) const
 {
-    if (next_position.x <= bounds.x[0] + t * 2)
+    if (next_position.x <= bounds.x[0] + t)
     {
         return true;
     }
 
-    if (next_position.x >= bounds.x[1] - t * 2)
+    if (next_position.x >= bounds.x[1] - t)
     {
         return true;
     }
 
-    if (next_position.y <= bounds.y[0] + t * 2)
+    if (next_position.y <= bounds.y[0] + t - 0.1f)
     {
         return true;
     }
 
-    if (next_position.y >= bounds.y[1] - t * 2)
+    if (next_position.y >= bounds.y[1] - t - 0.1f)
     {
         return true;
     }
 
-    if (next_position.z <= bounds.z[0] + t * 2)
+    if (next_position.z <= bounds.z[0] + t)
     {
         return true;
     }
 
-    if (next_position.z >= bounds.z[1] - t * 2)
+    if (next_position.z >= bounds.z[1] - t)
     {
         return true;
     }
