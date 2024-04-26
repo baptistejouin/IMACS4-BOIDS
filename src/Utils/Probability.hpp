@@ -12,6 +12,7 @@ public:
     static glm::vec3   get_random_velocity();
     static bool        bernoulli(float p);
     static std::string get_random_boid_texture();
+    static double      normale(double mu, double sigma);
     static void        math_law_02();
     static void        math_law_03();
     static void        math_law_04();

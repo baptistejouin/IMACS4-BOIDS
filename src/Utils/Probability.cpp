@@ -1,5 +1,5 @@
 #include "Utils/Probability.hpp"
-#include <string>
+#include "glm/common.hpp"
 
 long double rand_0_1()
 {
@@ -30,6 +30,14 @@ std::string Probability::get_random_boid_texture()
     }
 }
 
+double Probability::normale(double min, double max) // méthode de box-muller
+{
+    double mu    = (min + max) / 2;
+    double sigma = (max - min) / 3;
+    double X     = sqrt(-2 * log(rand_0_1())) * cos(2 * M_PI * rand_0_1());
+    return glm::clamp(mu + sigma * X, min, max);
+}
+
 glm::vec3 Probability::get_random_velocity()
 {
     return glm::vec3{p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f)};
@@ -37,9 +45,8 @@ glm::vec3 Probability::get_random_velocity()
 
 glm::vec3 Probability::get_random_position()
 {
-    // TODO(eliott)
-    return {rand_0_1() * 1.6f - 0.8f, rand_0_1() * 1.6f - 0.8f, rand_0_1() * 1.6f - 0.8f};
-};
+    return {normale(-0.8, 0.8), normale(-0.8, 0.8), normale(-0.8, 0.8)};
+}
 
 void Probability::math_law_02()
 {
