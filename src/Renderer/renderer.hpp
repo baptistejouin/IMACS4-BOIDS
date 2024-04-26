@@ -17,7 +17,7 @@ public:
     void render_terrain(p6::Context& ctx, Camera& camera, const Element& terrain, const std::vector<Light>& point_light) const;
     void render_point_light(p6::Context& ctx, Camera& camera, const std::vector<Light>& point_light) const;
     void render_arpenteur(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
-    void render_flowers(p6::Context& ctx, Camera& camera, const std::vector<Element>& flowers, const std::vector<Light>& point_light) const;
+    void render_flowers(p6::Context& ctx, Camera& camera, const std::vector<Flower>& flowers, const std::vector<Light>& point_light) const;
     void render_cube(p6::Context& ctx, Camera& camera, float scale, const std::vector<Light>& point_light) const;
     void gui();
 
@@ -29,6 +29,16 @@ private:
     Mesh _boids_mesh = Mesh(
         "assets/models/avion-HQ.obj",
         "assets/textures/papier.jpg",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _boids_mesh_blue = Mesh(
+        "assets/models/avion-HQ.obj",
+        "assets/textures/papier-bleu.jpg",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _boids_mesh_yellow = Mesh(
+        "assets/models/avion-HQ.obj",
+        "assets/textures/papier-jaune.jpg",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
     Mesh _terrain_mesh = Mesh(
@@ -46,8 +56,23 @@ private:
         "assets/textures/log.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
-    Mesh _flower_mesh = Mesh(
+    Mesh _flower_mesh_blue = Mesh(
         "assets/models/flower_blue.obj",
+        "assets/textures/flowers.png",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _flower_mesh_red = Mesh(
+        "assets/models/flower_red.obj",
+        "assets/textures/flowers.png",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _flower_mesh_yellow = Mesh(
+        "assets/models/flower_yellow.obj",
+        "assets/textures/flowers.png",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _flower_mesh_white = Mesh(
+        "assets/models/flower_white.obj",
         "assets/textures/flowers.png",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );

@@ -1,5 +1,6 @@
 #include "boids.hpp"
 #include <cstdio>
+#include "Utils/Probability.hpp"
 #include "glm/fwd.hpp"
 
 Boids::Boids(int nbBoids)
@@ -184,8 +185,8 @@ void Boids::reset()
 {
     for (auto& boid : _boids)
     {
-        boid.set_position(get_random_position());
-        boid.set_velocity(get_random_velocity());
+        boid.set_position(Probability::get_random_position());
+        boid.set_velocity(Probability::get_random_velocity(-0.1f, 0.1f));
     }
 }
 

@@ -84,7 +84,22 @@ void Renderer::render_boids(p6::Context& ctx, Camera& camera, const std::vector<
         // rotate the boid to face the direction it is going
         MVMatrix = glm::rotate(MVMatrix, boid.get_look_at_angle_and_axis().first, boid.get_look_at_angle_and_axis().second);
 
-        finalize_rendering(_boids_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        if (boid.get_texture_name() == "papier.jpg")
+        {
+            finalize_rendering(_boids_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        }
+        else if (boid.get_texture_name() == "papier-bleu.jpg")
+        {
+            finalize_rendering(_boids_mesh_blue, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        }
+        else if (boid.get_texture_name() == "papier-jaune.jpg")
+        {
+            finalize_rendering(_boids_mesh_yellow, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        }
+        else
+        {
+            throw std::runtime_error("Unsupported texture name");
+        }
     }
 }
 
@@ -105,9 +120,9 @@ void Renderer::render_terrain(p6::Context& ctx, Camera& camera, const Element& t
     finalize_rendering(_terrain_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
 }
 
-void Renderer::render_flowers(p6::Context& ctx, Camera& camera, const std::vector<Element>& flowers, const std::vector<Light>& point_light) const
+void Renderer::render_flowers(p6::Context& ctx, Camera& camera, const std::vector<Flower>& flowers, const std::vector<Light>& point_light) const
 {
-    _flower_mesh.shader.use();
+    _flower_mesh_blue.shader.use(); // the shader is the same for all the flowers, fix this later
 
     glm::mat4 ProjMatrix, ViewMatrix;
 
@@ -127,7 +142,25 @@ void Renderer::render_flowers(p6::Context& ctx, Camera& camera, const std::vecto
         // scale the flower
         MVMatrix = glm::scale(MVMatrix, flower.scale);
 
-        finalize_rendering(_flower_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        const Mesh* flower_mesh = nullptr;
+
+        switch (flower.model_type)
+        {
+        case 0:
+            flower_mesh = &_flower_mesh_blue;
+            break;
+        case 1:
+            flower_mesh = &_flower_mesh_red;
+            break;
+        case 2:
+            flower_mesh = &_flower_mesh_yellow;
+            break;
+        case 3:
+            flower_mesh = &_flower_mesh_white;
+            break;
+        }
+
+        finalize_rendering(*flower_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
     }
 }
 
@@ -206,26 +239,26 @@ void Renderer::gui()
         ImGui::EndCombo();
     }
 
-    if (ImGui::BeginCombo("Type of flowers", "Blue"))
-    {
-        if (ImGui::Selectable("Blue"))
-        {
-            _flower_mesh.change_mesh("assets/models/flower_blue.obj");
-        }
-        if (ImGui::Selectable("Red"))
-        {
-            _flower_mesh.change_mesh("assets/models/flower_red.obj");
-        }
-        if (ImGui::Selectable("Yellow"))
-        {
-            _flower_mesh.change_mesh("assets/models/flower_yellow.obj");
-        }
-        if (ImGui::Selectable("White"))
-        {
-            _flower_mesh.change_mesh("assets/models/flower_white.obj");
-        }
-        ImGui::EndCombo();
-    }
+    // if (ImGui::BeginCombo("Type of flowers", "Blue"))
+    // {
+    //     if (ImGui::Selectable("Blue"))
+    //     {
+    //         _flower_mesh.change_mesh("assets/models/flower_blue.obj");
+    //     }
+    //     if (ImGui::Selectable("Red"))
+    //     {
+    //         _flower_mesh.change_mesh("assets/models/flower_red.obj");
+    //     }
+    //     if (ImGui::Selectable("Yellow"))
+    //     {
+    //         _flower_mesh.change_mesh("assets/models/flower_yellow.obj");
+    //     }
+    //     if (ImGui::Selectable("White"))
+    //     {
+    //         _flower_mesh.change_mesh("assets/models/flower_white.obj");
+    //     }
+    //     ImGui::EndCombo();
+    // }
 
     ImGui::End();
 }

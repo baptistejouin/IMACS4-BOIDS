@@ -1,4 +1,5 @@
 #include "Environment/environment.hpp"
+#include <cstdio>
 #include "Camera/camera.hpp"
 
 glm::vec3 randomPointOnSurface()
@@ -18,15 +19,16 @@ glm::vec3 randomPointOnSurface()
     return {x, y, z};
 }
 
-std::vector<Element> randomFlowers(int n)
+std::vector<Flower> randomFlowers(int n)
 {
-    std::vector<Element> flowers;
+    std::vector<Flower> flowers;
     for (int i = 0; i < n; i++)
     {
-        Element flower;
-        flower.position = randomPointOnSurface();
-        flower.scale    = p6::random::number(0.01f, 0.05f) * glm::vec3{1.f};
-        flower.rotation = glm::vec3{0.f, p6::random::number(0.f, 360.f), 0.f};
+        Flower flower;
+        flower.position   = randomPointOnSurface();
+        flower.scale      = p6::random::number(0.01f, 0.05f) * glm::vec3{1.f};
+        flower.rotation   = glm::vec3{0.f, p6::random::number(0.f, 360.f), 0.f};
+        flower.model_type = p6::random::integer(0, 3);
         flowers.push_back(flower);
     }
     return flowers;
@@ -56,26 +58,6 @@ EnvironmentParams::EnvironmentParams()
 
     point_light = {light_01, light_02, light_03};
 
-    // Element flower_corner_left_2 = {
-    //     .position = {-1.45f, -1.22f, .6f},
-    //     .scale    = glm::vec3{.05f}
-    // };
-
-    // Element flower_corner_right_2 = {
-    //     .position = {.40f, -1.22f, .6f},
-    //     .scale    = glm::vec3{.05f}
-    // };
-
-    // Element flower_corner_left_3 = {
-    //     .position = {-1.45f, -1.22f, -1.25f},
-    //     .scale    = glm::vec3{.05f}
-    // };
-
-    // Element flower_corner_right_3 = {
-    //     .position = {.40f, -1.22f, -1.25f},
-    //     .scale    = glm::vec3{.05f}
-    // };
-
     flowers = randomFlowers(100);
 }
 
@@ -99,4 +81,12 @@ void Environment::gui()
     ImGui::Begin("Environment");
     ImGui::ColorEdit3("Background color", (float*)&_params.background_color);
     ImGui::End();
+}
+
+void Environment::update_flowers_model_type()
+{
+    for (auto& flower : _params.flowers)
+    {
+        flower.model_type = Probability::choose_flower_model(flower.model_type);
+    }
 }

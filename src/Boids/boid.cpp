@@ -1,27 +1,20 @@
 #include "boid.hpp"
+#include "Utils/Probability.hpp"
 #include "glm/fwd.hpp"
-
-glm::vec3 get_random_position()
-{
-    return glm::vec3{p6::random::number(-.8f, .8f), p6::random::number(-.8f, .8f), p6::random::number(-.8f, .8f)};
-}
-
-glm::vec3 get_random_velocity()
-{
-    return glm::vec3{p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f), p6::random::number(-.1f, .1f)};
-}
 
 Boid::Boid(glm::vec3 position, glm::vec3 velocity, float size)
     : _position(position)
     , _velocity(velocity)
     , _size(size)
+    , _texture_name(Probability::get_random_boid_texture())
 {
 }
 
 Boid::Boid()
-    : _position(glm::vec3{get_random_position()})
-    , _velocity(glm::vec3{get_random_velocity()})
-    , _size(0.03f)
+    : _position(glm::vec3{Probability::get_random_position()})
+    , _velocity(glm::vec3{Probability::get_random_velocity(-0.1f, 0.1f)})
+    , _size(Probability::get_boid_scale())
+    , _texture_name(Probability::get_random_boid_texture())
 {}
 
 void Boid::update(float delta_time)

@@ -8,7 +8,7 @@
 class Camera {
 public:
     Camera() noexcept;
-    bool      cube_collision(glm::vec3 next_position, float t, Bounds bounds) const;
+    bool      cube_collision(glm::vec3 next_position, Bounds bounds) const;
     void      move_front(float t, Bounds bounds);
     void      move_left(float t, Bounds bounds);
     void      move_up(float t, Bounds bounds);
