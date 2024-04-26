@@ -31,6 +31,16 @@ private:
         "assets/textures/papier.jpg",
         {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
     );
+    Mesh _boids_mesh_blue = Mesh(
+        "assets/models/avion-HQ.obj",
+        "assets/textures/papier-bleu.jpg",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
+    Mesh _boids_mesh_yellow = Mesh(
+        "assets/models/avion-HQ.obj",
+        "assets/textures/papier-jaune.jpg",
+        {"assets/shaders/3D.vs.glsl", "assets/shaders/point_light.fs.glsl"}
+    );
     Mesh _terrain_mesh = Mesh(
         "assets/models/terrain.obj",
         "assets/textures/terrain.col.png",

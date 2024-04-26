@@ -84,7 +84,22 @@ void Renderer::render_boids(p6::Context& ctx, Camera& camera, const std::vector<
         // rotate the boid to face the direction it is going
         MVMatrix = glm::rotate(MVMatrix, boid.get_look_at_angle_and_axis().first, boid.get_look_at_angle_and_axis().second);
 
-        finalize_rendering(_boids_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        if (boid.get_texture_name() == "papier.jpg")
+        {
+            finalize_rendering(_boids_mesh, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        }
+        else if (boid.get_texture_name() == "papier-bleu.jpg")
+        {
+            finalize_rendering(_boids_mesh_blue, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        }
+        else if (boid.get_texture_name() == "papier-jaune.jpg")
+        {
+            finalize_rendering(_boids_mesh_yellow, point_light, ProjMatrix, ViewMatrix, MVMatrix);
+        }
+        else
+        {
+            throw std::runtime_error("Unsupported texture name");
+        }
     }
 }
 

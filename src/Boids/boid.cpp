@@ -6,6 +6,7 @@ Boid::Boid(glm::vec3 position, glm::vec3 velocity, float size)
     : _position(position)
     , _velocity(velocity)
     , _size(size)
+    , _texture_name(Probability::get_random_boid_texture())
 {
 }
 
@@ -13,6 +14,7 @@ Boid::Boid()
     : _position(glm::vec3{Probability::get_random_position()})
     , _velocity(glm::vec3{Probability::get_random_velocity()})
     , _size(0.03f)
+    , _texture_name(Probability::get_random_boid_texture())
 {}
 
 void Boid::update(float delta_time)
