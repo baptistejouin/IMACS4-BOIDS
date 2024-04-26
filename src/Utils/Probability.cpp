@@ -1,5 +1,4 @@
 #include "Utils/Probability.hpp"
-#include "glm/common.hpp"
 
 /*
  * Loi utiles mathématiques
@@ -33,7 +32,7 @@ double uniform(const double min, const double max)
     return (max - min) * rand_0_1() + min;
 }
 
-// 0% de chance de rester sur le même état - 40% de chance de passer à l'état 1 - 30% de chance de passer à l'état 2 - 30% de chance de passer à l'état 3
+// 0% de chance de rester sur le même état - X% de chance de passer à l'état 1 - X% de chance de passer à l'état 2 - X% de chance de passer à l'état 3
 glm::mat4 mat{
     {0.0, 0.4, 0.3, 0.3},
     {0.3, 0.0, 0.3, 0.4},
@@ -95,7 +94,6 @@ glm::vec3 Probability::get_random_velocity(float min, float max) // utilisation 
 
 glm::vec3 Probability::get_random_position() // utilisation de la loi normale
 {
-    // E
     return {normale(-0.8, 0.8), normale(-0.8, 0.8), normale(-0.8, 0.8)};
 }
 
@@ -109,9 +107,26 @@ int Probability::choose_flower_model(int& current_flower_model_type) // utilisat
      * flower_white = 3
      */
 
-    // Matrice de passage pour chaîne de Markov
-
     switch (current_flower_model_type)
+    {
+    case 0:
+        return markov_next(mat[0]);
+        break;
+    case 1:
+        return markov_next(mat[1]);
+        break;
+    case 2:
+        return markov_next(mat[2]);
+        break;
+    case 3:
+        return markov_next(mat[3]);
+        break;
+    }
+}
+
+int Probability::get_random_boids_params(int& current)
+{
+    switch (current)
     {
     case 0:
         return markov_next(mat[0]);

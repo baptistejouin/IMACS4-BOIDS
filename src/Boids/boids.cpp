@@ -190,6 +190,73 @@ void Boids::reset()
     }
 }
 
+void Boids::update_boids_params()
+{
+    _state = Probability::get_random_boids_params(_state);
+
+    BoidsParams state01{
+        .visual_range{.10f},
+        .protected_range{.03f},
+        .centering_factor{.001f},
+        .avoid_factor{.9f},
+        .matching_factor{.02f},
+        .max_speed{.5f},
+        .min_speed{.3f},
+        .bounds{{-1.45f, 1.45f}, {-1.0f, 1.45f}, {-1.45f, 1.45f}},
+        .bounds_force_range{0.3f},
+    };
+    BoidsParams state02{
+        .visual_range{.15f},
+        .protected_range{.04f},
+        .centering_factor{.005f},
+        .avoid_factor{.9f},
+        .matching_factor{.02f},
+        .max_speed{.2f},
+        .min_speed{.1f},
+        .bounds{{-1.45f, 1.45f}, {-1.0f, 1.45f}, {-1.45f, 1.45f}},
+        .bounds_force_range{0.3f},
+    };
+    BoidsParams state03{
+        .visual_range{.25f},
+        .protected_range{.15f},
+        .centering_factor{.001f},
+        .avoid_factor{.5f},
+        .matching_factor{.05f},
+        .max_speed{.5f},
+        .min_speed{.3f},
+        .bounds{{-1.45f, 1.45f}, {-1.0f, 1.45f}, {-1.45f, 1.45f}},
+        .bounds_force_range{0.3f},
+    };
+    BoidsParams state04{
+        .visual_range{.15f},
+        .protected_range{.065f},
+        .centering_factor{.01f},
+        .avoid_factor{.9f},
+        .matching_factor{.1f},
+        .max_speed{.9f},
+        .min_speed{.7f},
+        .bounds{{-1.45f, 1.45f}, {-1.0f, 1.45f}, {-1.45f, 1.45f}},
+        .bounds_force_range{0.3f},
+    };
+
+    // return corresponding state
+    switch (_state)
+    {
+    case 0:
+        _params = state01;
+        break;
+    case 1:
+        _params = state02;
+        break;
+    case 2:
+        _params = state03;
+        break;
+    case 3:
+        _params = state04;
+        break;
+    }
+}
+
 void Boids::gui()
 {
     ImGui::Begin("Boids");

@@ -20,8 +20,10 @@ public:
 
     const std::vector<Boid>& get_boids() const { return _boids; }
     const Bounds&            get_bounds() const { return _params.bounds; }
+    void                     update_boids_params();
 
 private:
+    int               _state = 0;
     std::vector<Boid> _boids;
     BoidsParams       _params;
 };

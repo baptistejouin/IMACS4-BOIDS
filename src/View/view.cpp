@@ -25,9 +25,13 @@ void View::init(p6::Context& ctx)
     };
 
     ctx.key_pressed = [this](p6::Key const& key) {
-        if (key.logical == "F")
+        if (key.physical == GLFW_KEY_F)
         {
             _environment.update_flowers_model_type();
+        }
+        if (key.physical == GLFW_KEY_B)
+        {
+            _boids.update_boids_params();
         }
     };
 
