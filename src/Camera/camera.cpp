@@ -8,7 +8,7 @@ Camera::Camera() noexcept
     compute_direction_vectors();
 }
 
-bool Camera::cube_collision(glm::vec3 next_position, float t, Bounds bounds) const
+bool Camera::cube_collision(glm::vec3 next_position, Bounds bounds) const
 {
     if (next_position.x <= bounds.x[0])
     {
@@ -44,7 +44,7 @@ bool Camera::cube_collision(glm::vec3 next_position, float t, Bounds bounds) con
 
 void Camera::move_front(float t, Bounds bounds)
 {
-    if (!cube_collision(_position + t * _front, t, bounds))
+    if (!cube_collision(_position + t * _front, bounds))
     {
         _position += t * _front;
     }
@@ -52,7 +52,7 @@ void Camera::move_front(float t, Bounds bounds)
 
 void Camera::move_left(float t, Bounds bounds)
 {
-    if (!cube_collision(_position + t * _left, t, bounds))
+    if (!cube_collision(_position + t * _left, bounds))
     {
         _position += t * _left;
     }
@@ -60,7 +60,7 @@ void Camera::move_left(float t, Bounds bounds)
 
 void Camera::move_up(float t, Bounds bounds)
 {
-    if (!cube_collision(_position + t * glm::vec3(0.0f, 1.0f, 0.0f), t, bounds))
+    if (!cube_collision(_position + t * glm::vec3(0.0f, 1.0f, 0.0f), bounds))
     {
         _position += t * glm::vec3(0.0f, 1.0f, 0.0f);
     }
