@@ -12,8 +12,8 @@ Boid::Boid(glm::vec3 position, glm::vec3 velocity, float size)
 
 Boid::Boid()
     : _position(glm::vec3{Probability::get_random_position()})
-    , _velocity(glm::vec3{Probability::get_random_velocity()})
-    , _size(0.03f)
+    , _velocity(glm::vec3{Probability::get_random_velocity(-0.1f, 0.1f)})
+    , _size(Probability::get_boid_scale())
     , _texture_name(Probability::get_random_boid_texture())
 {}
 

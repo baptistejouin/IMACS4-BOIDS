@@ -1,5 +1,6 @@
 #include "View/view.hpp"
 #include <cstdio>
+#include "Utils/Probability.hpp"
 
 void View::init(p6::Context& ctx)
 {
@@ -67,6 +68,7 @@ void View::update(p6::Context& ctx)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     _environment.update_fixed_light(_camera);
+
     _environment.draw(ctx);
     _renderer.render_boids(ctx, _camera, _boids.get_boids(), _environment.get_points_light());
     _renderer.render_terrain(ctx, _camera, _environment.get_terrain(), _environment.get_points_light());
@@ -74,6 +76,19 @@ void View::update(p6::Context& ctx)
     _renderer.render_arpenteur(ctx, _camera, .03f, _environment.get_points_light());
     _renderer.render_cube(ctx, _camera, 1.2f, _environment.get_points_light());
     _renderer.render_point_light(ctx, _camera, _environment.get_points_light());
+
+    // update flowers model type every 2 seconds
+    if (static_cast<int>(ctx.time()) % 2 == 0)
+    {
+        // check if ctx.time is in a margin of 0.1 and 0.2 to avoid multiple call
+        if (ctx.time() - static_cast<int>(ctx.time()) < 0.01f)
+        {
+            printf("%f Updating flowers model type\n", ctx.time());
+            _environment.update_flowers_model_type();
+        }
+    }
+
     _boids.update(ctx.delta_time());
+
     _check_events(ctx, _boids.get_bounds());
 }

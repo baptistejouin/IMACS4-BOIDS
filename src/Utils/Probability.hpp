@@ -7,14 +7,9 @@
 
 class Probability {
 public:
-    // TODO rename to true utility name
     static glm::vec3   get_random_position();
-    static glm::vec3   get_random_velocity();
-    static bool        bernoulli(float p);
+    static glm::vec3   get_random_velocity(float min, float max);
     static std::string get_random_boid_texture();
-    static double      normale(double mu, double sigma);
-    static void        math_law_02();
-    static void        math_law_03();
-    static void        math_law_04();
-    static void        math_law_05();
+    static int         choose_flower_model(int& current_flower);
+    static float       get_boid_scale();
 };
