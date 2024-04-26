@@ -1,5 +1,6 @@
 #include "View/view.hpp"
 #include <cstdio>
+#include "GLFW/glfw3.h"
 #include "Utils/Probability.hpp"
 
 void View::init(p6::Context& ctx)
@@ -21,6 +22,13 @@ void View::init(p6::Context& ctx)
 
     ctx.mouse_scrolled = [this](p6::MouseScroll const& scroll) {
         _camera.zoom(scroll.dy, 0.01f);
+    };
+
+    ctx.key_pressed = [this](p6::Key const& key) {
+        if (key.logical == "F")
+        {
+            _environment.update_flowers_model_type();
+        }
     };
 
     glEnable(GL_DEPTH_TEST);
@@ -56,12 +64,6 @@ void View::_check_events(p6::Context& ctx, Bounds bounds)
     {
         _camera.move_up(-0.01f, bounds);
     }
-
-    // debug
-    if (ctx.key_is_pressed(GLFW_KEY_L))
-    {
-        printf("Camera position: %f %f %f\n", _camera.get_position().x, _camera.get_position().y, _camera.get_position().z);
-    }
 }
 
 void View::update(p6::Context& ctx)
@@ -78,15 +80,15 @@ void View::update(p6::Context& ctx)
     _renderer.render_point_light(ctx, _camera, _environment.get_points_light());
 
     // update flowers model type every 2 seconds
-    if (static_cast<int>(ctx.time()) % 2 == 0)
-    {
-        // check if ctx.time is in a margin of 0.1 and 0.2 to avoid multiple call
-        if (ctx.time() - static_cast<int>(ctx.time()) < 0.01f)
-        {
-            printf("%f Updating flowers model type\n", ctx.time());
-            _environment.update_flowers_model_type();
-        }
-    }
+    // if (static_cast<int>(ctx.time()) % 2 == 0)
+    // {
+    //     // check if ctx.time is in a margin of 0.1 and 0.2 to avoid multiple call
+    //     if (ctx.time() - static_cast<int>(ctx.time()) < 0.01f)
+    //     {
+    //         printf("%f Updating flowers model type\n", ctx.time());
+
+    //     }
+    // }
 
     _boids.update(ctx.delta_time());
 
