@@ -1,7 +1,4 @@
 #include "boids.hpp"
-#include <cstdio>
-#include "Utils/Probability.hpp"
-#include "glm/fwd.hpp"
 
 Boids::Boids(int nbBoids)
     : _boids(nbBoids)
@@ -273,5 +270,65 @@ void Boids::gui()
     ImGui::SliderFloat("Max speed", &_params.max_speed, .001f, 1.f);
     ImGui::SliderFloat("Min speed", &_params.min_speed, .001f, 1.f);
     ImGui::SliderFloat("Bounds force range", &_params.bounds_force_range, .001f, .5f);
+    ImGui::End();
+
+    ImGui::Begin("Probability");
+
+    std::vector<float> boids_size;
+
+    // histogram of the boids size
+    for (auto const& boid : _boids)
+    {
+        boids_size.push_back(boid.get_size());
+    }
+
+    // Vérifier si des données sont disponibles avant de dessiner l'histogramme
+    if (!boids_size.empty())
+    {
+        // Normaliser les données
+        float              min_size = *std::min_element(boids_size.begin(), boids_size.end());
+        float              max_size = *std::max_element(boids_size.begin(), boids_size.end());
+        std::vector<float> normalized_data;
+        for (float size : boids_size)
+        {
+            float normalized_size = (size - min_size) / (max_size - min_size);
+            normalized_data.push_back(normalized_size);
+        }
+
+        // group_size est le nombre de groupes dans l'histogramme, on le definie par rapport à la taille des données dynamiquement
+        const int        group_size = static_cast<int>(normalized_data.size() / 10);
+        std::vector<int> histogram(group_size, 0);
+        for (float size : normalized_data)
+        {
+            int bin = static_cast<int>(size * group_size);
+            bin     = std::min(bin, group_size - 1); // Assurez-vous que bin est dans les limites
+            histogram[bin]++;
+        }
+
+        // Convertir l'histogramme en un vecteur de float
+        std::vector<float> histogram_floats(histogram.begin(), histogram.end());
+
+        // Trouver la hauteur maximale de l'histogramme
+        float max_height = *std::max_element(histogram_floats.begin(), histogram_floats.end());
+
+        // Mettre à l'échelle les valeurs de l'histogramme pour qu'elles correspondent à la hauteur maximale souhaitée
+        const float desired_max_height = 300.0f; // Hauteur maximale souhaitée du graphique
+        for (auto& value : histogram_floats)
+        {
+            value = (value / max_height) * desired_max_height;
+        }
+
+        // Tracer l'histogramme des tailles des boids
+        ImGui::PlotHistogram("Boids Size", histogram_floats.data(), histogram_floats.size(), 0, "Size", 0.0f, desired_max_height, ImVec2(400, 300));
+
+        // Afficher les valeurs min et max
+        ImGui::Text("Min size: %.8f", min_size);
+        ImGui::Text("Max size: %.8f", max_size);
+    }
+    else
+    {
+        ImGui::Text("No data available.");
+    }
+
     ImGui::End();
 }

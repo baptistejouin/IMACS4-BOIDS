@@ -1,7 +1,4 @@
 #include "View/view.hpp"
-#include <cstdio>
-#include "GLFW/glfw3.h"
-#include "Utils/Probability.hpp"
 
 void View::init(p6::Context& ctx)
 {
@@ -64,10 +61,10 @@ void View::_check_events(p6::Context& ctx, Bounds bounds)
     {
         _camera.move_up(0.01f, bounds);
     }
-    if (ctx.key_is_pressed(GLFW_KEY_LEFT_SHIFT))
-    {
-        _camera.move_up(-0.01f, bounds);
-    }
+    // if (ctx.key_is_pressed(GLFW_KEY_LEFT_SHIFT))
+    // {
+    //     _camera.move_up(-0.01f, bounds);
+    // }
 }
 
 void View::update(p6::Context& ctx)
@@ -83,18 +80,7 @@ void View::update(p6::Context& ctx)
     _renderer.render_cube(ctx, _camera, 1.2f, _environment.get_points_light());
     _renderer.render_point_light(ctx, _camera, _environment.get_points_light());
 
-    // update flowers model type every 2 seconds
-    // if (static_cast<int>(ctx.time()) % 2 == 0)
-    // {
-    //     // check if ctx.time is in a margin of 0.1 and 0.2 to avoid multiple call
-    //     if (ctx.time() - static_cast<int>(ctx.time()) < 0.01f)
-    //     {
-    //         printf("%f Updating flowers model type\n", ctx.time());
-
-    //     }
-    // }
-
-    _boids.update(ctx.delta_time());
+    // _boids.update(ctx.delta_time());
 
     _check_events(ctx, _boids.get_bounds());
 }

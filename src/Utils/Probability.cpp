@@ -18,8 +18,6 @@ bool bernoulli(float p)
 }
 double normale(double min, double max) // méthode de box-muller
 {
-    // E =
-
     double mu    = (min + max) / 2;
     double sigma = (max - min) / 3;
     double X     = sqrt(-2 * log(rand_0_1())) * cos(2 * M_PI * rand_0_1()); // E = 0
@@ -30,6 +28,33 @@ double normale(double min, double max) // méthode de box-muller
 double uniform(const double min, const double max)
 {
     return (max - min) * rand_0_1() + min;
+}
+
+// loi beta
+double beta_distrib(double alpha, double beta)
+{
+    // utilisation de la méthode de l'inverse de la fonction de répartition
+    // une autre solution est d'utiliser la distribution beta de la librairie random C++17
+
+    long double u1 = rand_0_1();
+    long double u2 = rand_0_1();
+
+    long double x = pow(u1, 1.0 / alpha);
+    long double y = pow(u2, 1.0 / beta);
+
+    return x / (x + y);
+}
+
+double beta_distribution(double alpha, double beta)
+{
+    std::random_device              rd;
+    std::mt19937                    gen(rd());
+    std::gamma_distribution<double> gamma1(alpha, 1.0), gamma2(beta, 1.0);
+
+    double x1 = gamma1(gen);
+    double x2 = gamma2(gen);
+
+    return x1 / (x1 + x2);
 }
 
 // 0% de chance de rester sur le même état - X% de chance de passer à l'état 1 - X% de chance de passer à l'état 2 - X% de chance de passer à l'état 3
@@ -142,10 +167,28 @@ int Probability::get_random_boids_params(int& current)
         break;
     }
 }
+double loiBeta(float alpha, float beta)
+{
+    float x, y;
+    do
+    {
+        float u = rand_0_1();
+        float v = rand_0_1();
+
+        x = std::pow(u, 1.0f / alpha);
+        y = std::pow(v, 1.0f / beta);
+    } while (x + y > 1.0f);
+
+    return (2.0f * x / (x + y)) - 1.0f;
+}
 
 float Probability::get_boid_scale()
 {
-    // original size 0.03
-    // lambda = 2.0f : la distribution exponentielle sera plus étroite, avec une concentration plus forte autour de min
-    return exponential(0.01, 0.035, 2.);
+    // loi exponentielle
+    // float x = exponential(0.01, 0.035, 2.);
+
+    // beta reduite
+    float x = beta_distribution(2.0f, 2.0f) / 20;
+
+    return x;
 }

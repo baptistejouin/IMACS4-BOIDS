@@ -1,5 +1,6 @@
 #pragma once
 
+#include <imgui.h>
 #include <glm/glm.hpp>
 #include <vector>
 #include "Boids/boid.hpp"
@@ -12,7 +13,7 @@ void  prevent_bounds_exit(Boid& boid, const BoidsParams& params);
 
 class Boids {
 public:
-    explicit Boids(int nbBoids = 300);
+    explicit Boids(int nbBoids = 500);
 
     void update(float delta_time);
     void reset();
